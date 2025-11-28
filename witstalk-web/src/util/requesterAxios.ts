@@ -3,7 +3,6 @@ import {showMessage} from "~/util/msg";
 import {aesDecrypt, aesEncrypt, generateAesKeyAndIv, rsaEncrypt} from "~/util/encryption.ts";
 import {keyStore} from "~/store/keyStore.ts";
 import CryptoJS from 'crypto-js';
-import { request } from "node_modules/axios/index.d.cts";
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -14,7 +13,6 @@ const instance = axios.create({
     timeout: 1000000
 })
 const responseInterceptors = (response) => {
-    debugger
     if (response.data instanceof Object) {
         if (response.data.code === 401) {
             showMessage.error("登录过期，请重新登录！")

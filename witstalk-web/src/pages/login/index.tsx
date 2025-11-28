@@ -3,7 +3,6 @@ import { Button, Card, Form, Input, Typography, Row, Col, Checkbox } from 'antd'
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
 import { useLogin } from '~/hook/useAuth.ts';
-import './login.css';
 import {showMessage} from "~/util/msg";
 
 const { Title, Paragraph } = Typography;
@@ -25,20 +24,20 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <Row justify="center" align="middle" className="login-row">
-        <Col xs={22} sm={20} md={14} lg={10} xl={8}>
-          <Card className="login-card" bordered={false}>
-            <div className="login-header">
-              <Title level={3} className="login-title">Witstalk</Title>
-              <Paragraph className="login-subtitle">欢迎回来，请登录您的账户</Paragraph>
+    <div className="cream-bg">
+      <Row justify="center" align="middle" className="cream-row">
+        <Col xs={22} xl={24}>
+          <Card className="cream-card cream-fade-in" bordered={false} style={{ borderRadius: '12px' }}>
+            <div className="cream-header">
+              <Title level={3} className="cream-title">Witstalk</Title>
+              <Paragraph className="cream-subtitle">欢迎回来，请登录您的账户</Paragraph>
             </div>
             
             <Form
               form={form}
               layout="vertical"
               onFinish={onFinish}
-              className="login-form"
+              className="cream-form"
             >
               <Item
                 name="username"
@@ -54,7 +53,8 @@ const LoginPage: React.FC = () => {
                 <Input
                   prefix={<UserOutlined />}
                   placeholder="请输入用户名"
-                  className="login-input"
+                  className="cream-input"
+                  style={{ height: '40px' }}
                 />
               </Item>
               
@@ -72,28 +72,30 @@ const LoginPage: React.FC = () => {
                 <Input.Password
                   prefix={<LockOutlined />}
                   placeholder="请输入密码"
-                  className="login-input"
+                  className="cream-input"
+                  style={{ height: '40px' }}
                 />
               </Item>
               
-              <Item name="remember" valuePropName="checked" className="login-remember">
+              <Item name="remember" valuePropName="checked">
                 <Checkbox>记住我</Checkbox>
-                <Button type="text" className="login-forgot">忘记密码？</Button>
+                <Button type="text" className="cream-link">忘记密码？</Button>
               </Item>
               
-              <Item className="login-button-item">
+              <Item>
                 <Button
                   type="primary"
                   htmlType="submit"
-                  className="login-button"
+                  className="cream-button"
                   loading={isLoading}
                   block
+                  style={{ height: '40px' }}
                 >
                   登录
                 </Button>
               </Item>
               
-              <div className="login-register">
+              <div className="text-center mt-4">
                 <span>还没有账号？</span>
                 <Button type="link" onClick={() => navigate('/register')}>立即注册</Button>
               </div>

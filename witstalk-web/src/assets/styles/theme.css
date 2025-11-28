@@ -1,0 +1,248 @@
+:root {
+  /* 奶油风设计颜色变量 */
+  --cream-primary: #8b6914;
+  --cream-secondary: #a67c41;
+  --cream-tertiary: #c8a97e;
+  --cream-light: #e9d5b3;
+  --cream-bg-1: #fff8e8;
+  --cream-bg-2: #f9f0d9;
+  --cream-card-bg: rgba(255, 254, 249, 0.7);
+  --cream-card-bg-hover: rgba(255, 254, 249, 0.8);
+  --cream-border: rgba(255, 255, 255, 0.3);
+  --cream-input-border: #e9d5b3;
+  --cream-box-bg: #fef9f0;
+  --cream-box-border: #f0e0c8;
+  
+  /* 阴影变量 */
+  --cream-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  --cream-shadow-hover: 0 15px 40px rgba(31, 38, 135, 0.2);
+  --cream-shadow-mobile: 0 10px 30px rgba(0, 0, 0, 0.1);
+  
+  /* 尺寸变量 */
+  --cream-border-radius: 20px;
+  --cream-border-radius-small: 12px;
+  --cream-border-radius-smaller: 8px;
+  --cream-padding: 40px;
+  --cream-padding-mobile: 30px 20px;
+  --cream-padding-small-mobile: 20px 15px;
+  --cream-button-height: 40px;
+}
+
+/* 全局背景样式 */
+.cream-bg {
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, var(--cream-bg-1) 0%, var(--cream-bg-2) 100%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 响应式背景 */
+@media (max-width: 480px) {
+  .cream-bg {
+    padding: 10px;
+  }
+}
+
+/* 卡片样式 */
+.cream-card {
+  background: var(--cream-card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--cream-border-radius);
+  box-shadow: var(--cream-shadow);
+  padding: var(--cream-padding);
+  transition: all 0.3s ease;
+  border: 1px solid var(--cream-border);
+  width: 100%;
+  max-width: 800px; /* 限制最大宽度，确保在大屏幕上展示美观 */
+}
+
+.cream-card:hover {
+  box-shadow: var(--cream-shadow-hover);
+  transform: translateY(-2px);
+  background: var(--cream-card-bg-hover);
+}
+
+/* 响应式卡片 - 电脑端优化 */
+@media (min-width: 1024px) {
+  .cream-row {
+    width: 600px;
+  }
+  
+  .cream-card {
+    /* 电脑端保持液态玻璃效果 */
+    backdrop-filter: blur(16px); /* 增强模糊效果 */
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 254, 249, 0.65); /* 稍微降低透明度以增强玻璃效果 */
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1); /* 保持适当阴影 */
+  }
+  
+  .cream-card:hover {
+    background: rgba(255, 254, 249, 0.8); /* 悬停时增加不透明度 */
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15); /* 增强悬停阴影 */
+    transform: translateY(-2px); /* 保持轻微浮动效果 */
+  }
+}
+
+/* 响应式卡片 - 移动设备 */
+@media (max-width: 768px) {
+  .cream-card {
+    padding: var(--cream-padding-mobile);
+    box-shadow: var(--cream-shadow-mobile);
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .cream-card {
+    padding: var(--cream-padding-small-mobile);
+    border-radius: var(--cream-border-radius-small);
+  }
+}
+
+/* 标题样式 */
+.cream-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.cream-title {
+  color: var(--cream-primary);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.cream-subtitle {
+  color: #666;
+  font-size: 14px;
+}
+
+/* 响应式标题 */
+@media (max-width: 768px) {
+  .cream-header {
+    margin-bottom: 20px;
+  }
+  
+  .cream-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cream-title {
+    font-size: 20px;
+  }
+}
+
+/* 表单样式 */
+.cream-form {
+  width: 100%;
+}
+
+.cream-input {
+  border-radius: var(--cream-border-radius-small);
+  border: 1px solid var(--cream-input-border);
+  transition: all 0.3s ease;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.cream-input:hover {
+  border-color: var(--cream-tertiary);
+}
+
+.cream-input:focus {
+  border-color: var(--cream-secondary);
+  box-shadow: 0 0 0 2px rgba(166, 124, 65, 0.2);
+  animation: pulse 0.3s ease;
+}
+
+/* 响应式输入框 */
+@media (max-width: 480px) {
+  .cream-input {
+    font-size: 13px;
+  }
+}
+
+/* 按钮样式 */
+.cream-button {
+  height: var(--cream-button-height);
+  border-radius: var(--cream-border-radius-small);
+  font-size: 16px;
+  font-weight: 500;
+  background: var(--cream-tertiary);
+  border: none;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+.cream-button:hover {
+  background: var(--cream-secondary);
+  transform: translateY(-1px);
+}
+
+.cream-button:active {
+  transform: translateY(0);
+}
+
+/* 响应式按钮 */
+@media (max-width: 768px) {
+  .cream-button {
+    font-size: 14px;
+  }
+}
+
+/* 辅助容器 */
+.cream-box {
+  background: var(--cream-box-bg);
+  border-radius: var(--cream-border-radius-small);
+  border: 1px solid var(--cream-box-border);
+  padding: 20px;
+}
+
+/* 链接样式 */
+.cream-link {
+  color: var(--cream-secondary);
+  font-size: 14px;
+}
+
+.cream-link:hover {
+  color: var(--cream-primary);
+  text-decoration: underline;
+}
+
+/* 表单项间距 */
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 2px rgba(166, 124, 65, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(166, 124, 65, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 2px rgba(166, 124, 65, 0.2);
+  }
+}
+
+.cream-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}

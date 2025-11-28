@@ -1,15 +1,14 @@
 import React, {useEffect} from "react";
 import {Outlet} from "react-router";
-import {ConfigProvider, Flex, Layout, message} from "antd";
+import { Flex, Layout, message} from "antd";
 import {LeftMenu} from "~/components/layout/leftMenu";
 import {useNavigate} from 'react-router'
-import {MessageProvider} from "~/util/msg";
 
 const {Header, Footer, Sider, Content} = Layout;
 
-export function AppLayout({children}) {
+export default function AppLayout({children}) {
     const navigate = useNavigate();
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi] = message.useMessage();
 
     // 检查当前是不是客户端的渲染
     useEffect(() => {

@@ -2,7 +2,6 @@ import React from 'react';
 import { Button, Card, Form, Input, Typography, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, ProfileOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
-import './register.css';
 import { useRegister } from '~/hook/useAuth.ts';
 import {showMessage} from "~/util/msg";
 
@@ -26,20 +25,20 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="register-container">
-      <Row justify="center" align="middle" className="register-row">
-        <Col xs={22} sm={20} md={14} lg={10} xl={8}>
-          <Card className="register-card" bordered={false}>
-            <div className="register-header">
-              <Title level={3} className="register-title">Witstalk</Title>
-              <Paragraph className="register-subtitle">创建新账户，开始使用</Paragraph>
+    <div className="cream-bg">
+      <Row justify="center" align="middle"  className="cream-row">
+        <Col xs={22} xl={24}>
+          <Card className="cream-card cream-fade-in" bordered={false} style={{ borderRadius: '12px' }}>
+            <div className="cream-header">
+              <Title level={3} className="cream-title">Witstalk</Title>
+              <Paragraph className="cream-subtitle">创建新账户，开始使用</Paragraph>
             </div>
             
             <Form
               form={form}
               layout="vertical"
               onFinish={onFinish}
-              className="register-form"
+              className="cream-form"
             >
               <Item
                 name="username"
@@ -55,7 +54,8 @@ const RegisterPage: React.FC = () => {
                 <Input
                   prefix={<UserOutlined />}
                   placeholder="请输入用户名"
-                  className="register-input"
+                  className="cream-input"
+                  style={{ height: '40px' }}
                 />
               </Item>
               
@@ -73,7 +73,8 @@ const RegisterPage: React.FC = () => {
                 <Input.Password
                   prefix={<LockOutlined />}
                   placeholder="请输入密码"
-                  className="register-input"
+                  className="cream-input"
+                  style={{ height: '40px' }}
                 />
               </Item>
               
@@ -100,7 +101,8 @@ const RegisterPage: React.FC = () => {
                 <Input.Password
                   prefix={<LockOutlined />}
                   placeholder="请再次输入密码"
-                  className="register-input"
+                  className="cream-input"
+                  style={{ height: '40px' }}
                 />
               </Item>
               
@@ -118,7 +120,8 @@ const RegisterPage: React.FC = () => {
                 <Input
                   prefix={<ProfileOutlined />}
                   placeholder="请输入昵称"
-                  className="register-input"
+                  className="cream-input"
+                  style={{ height: '40px' }}
                 />
               </Item>
               
@@ -136,23 +139,25 @@ const RegisterPage: React.FC = () => {
                 <Input
                   prefix={<MailOutlined />}
                   placeholder="请输入邮箱"
-                  className="register-input"
+                  className="cream-input"
+                  style={{ height: '40px' }}
                 />
               </Item>
               
-              <Item className="register-button-item">
+              <Item>
                 <Button
                   type="primary"
-                    htmlType="submit"
-                    className="register-button"
-                    loading={isLoading}
-                    block
-                  >
+                  htmlType="submit"
+                  className="cream-button"
+                  loading={isLoading}
+                  block
+                  style={{ height: '40px' }}
+                >
                   注册
                 </Button>
               </Item>
               
-              <div className="register-login">
+              <div className="text-center mt-4">
                 <span>已有账号？</span>
                 <Button type="link" onClick={() => navigate('/login')}>立即登录</Button>
               </div>

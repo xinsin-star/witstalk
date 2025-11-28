@@ -10,6 +10,9 @@ interface ErrorBoundaryProps {
   error: unknown;
 }
 
+/**
+ * 错误边界组件，用于显示路由级别的错误
+ */
 export function ErrorBoundary({ error }: ErrorBoundaryProps) {
   const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState<boolean>(false);
@@ -30,7 +33,7 @@ export function ErrorBoundary({ error }: ErrorBoundaryProps) {
       : routeError.statusText || '服务器暂时无法处理您的请求。';
   } else if (error instanceof Error) {
     // JavaScript错误处理
-    errorType = '应用错误';
+    errorType = error.name || '应用错误';
     message = '应用发生错误';
     details = process.env.NODE_ENV === 'development' ? error.message : '应用在运行时出现了问题。';
     stack = error.stack;
@@ -57,74 +60,82 @@ export function ErrorBoundary({ error }: ErrorBoundaryProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fff8e8] to-[#f9f0d9] p-4">
-      <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm border-none shadow-lg rounded-xl">
-        <div className="text-center">
-          {/* 错误图标 */}
-          <InfoCircleOutlined className="text-red-500 text-5xl mb-4" />
-          
-          {/* 错误标题 */}
-          <Title level={3} className="text-gray-800 mb-2">
-            {message}
-          </Title>
-          
-          {/* 错误描述 */}
-          <Paragraph className="text-gray-600 mb-4">
-            {details}
-          </Paragraph>
-          
-          <Divider className="my-4" />
-          
-          {/* 操作按钮 */}
-          <div className="flex flex-col sm:flex-row gap-2 justify-center">
-            <Button 
-              type="primary" 
-              icon={<ReloadOutlined />}
-              onClick={handleRetry}
-              className="bg-[#f97316] hover:bg-[#ea580c] border-none text-white"
-            >
-              重试
-            </Button>
-            <Button 
-              icon={<HomeOutlined />}
-              onClick={handleGoHome}
-              className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-            >
-              返回首页
-            </Button>
+        <div className="cream-bg">
+            <div>
+                <Card className="cream-card cream-fade-in max-w-md mx-auto">
+                    <div className="cream-header">
+                        {/* 错误图标 - 奶油风配色 */}
+                        <InfoCircleOutlined style={{ fontSize: '48px', color: '#a67c41', marginBottom: '24px', display: 'block' }} />
+                        
+                        {/* 错误标题 - 奶油风配色 */}
+                        <Title level={3} className="cream-title">
+                            {message}
+                        </Title>
+                        
+                        {/* 错误描述 */}
+                        <Paragraph className="cream-subtitle">
+                            {details}
+                        </Paragraph>
+                        
+                        <Divider className="my-6" />
+                        
+                        {/* 操作按钮 - 奶油风样式 */}
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <Button 
+                                type="primary" 
+                                icon={<ReloadOutlined />}
+                                onClick={handleRetry}
+                                className="cream-button"
+                            >
+                                重试
+                            </Button>
+                            <Button 
+                                icon={<HomeOutlined />}
+                                onClick={handleGoHome}
+                                style={{ 
+                                    backgroundColor: 'transparent', 
+                                    color: '#a67c41',
+                                    borderColor: '#e9d5b3',
+                                    borderRadius: '12px',
+                                    height: '40px'
+                                }}
+                            >
+                                返回首页
+                            </Button>
+                        </div>
+                        
+                        {/* 开发环境下的错误详情 - 奶油风样式 */}
+                        {process.env.NODE_ENV === 'development' && (stack || errorType !== '未知错误') && (
+                            <div className="mt-8">
+                                <Button 
+                                    type="link" 
+                                    onClick={toggleDetails}
+                                    className="cream-link"
+                                >
+                                    {showDetails ? '隐藏错误详情' : '显示错误详情'}
+                                </Button>
+                                
+                                {showDetails && (
+                                    <div className="cream-box mt-4">
+                                        <div className="mb-3">
+                                            <Text strong className="text-[#8b6914]">错误类型：</Text>
+                                            <Text className="text-[#666]">{errorType}</Text>
+                                        </div>
+                                        {stack && (
+                                            <div className="mt-3">
+                                                <Text strong className="text-[#8b6914]">错误堆栈：</Text>
+                                                <pre className="mt-2 p-3 bg-[#fff8e8] text-[#666] text-xs overflow-auto max-h-40 rounded-lg border border-[#e9d5b3]">
+                                                    {stack}
+                                                </pre>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
           </div>
-          
-          {/* 开发环境下的错误详情 */}
-          {process.env.NODE_ENV === 'development' && (stack || errorType !== '未知错误') && (
-            <div className="mt-6">
-              <Button 
-                type="link" 
-                onClick={toggleDetails}
-                className="text-blue-500"
-              >
-                {showDetails ? '隐藏错误详情' : '显示错误详情'}
-              </Button>
-              
-              {showDetails && (
-                <div className="mt-4 p-3 bg-gray-100 rounded-lg text-left">
-                  <div className="mb-2">
-                    <Text strong>错误类型：</Text>
-                    <Text>{errorType}</Text>
-                  </div>
-                  {stack && (
-                    <div className="mt-2">
-                      <Text strong>错误堆栈：</Text>
-                      <pre className="mt-1 p-2 bg-gray-800 text-gray-100 text-xs overflow-auto max-h-40 rounded">
-                        {stack}
-                      </pre>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
