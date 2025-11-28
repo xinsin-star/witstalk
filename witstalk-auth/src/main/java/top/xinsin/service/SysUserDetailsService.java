@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import top.xinsin.api.system.RemoteUserService;
 import top.xinsin.api.system.domain.SysUser;
 import top.xinsin.util.Result;
+import top.xinsin.util.SecurityUtil;
 
 @Service
 public class SysUserDetailsService {
@@ -41,5 +42,11 @@ public class SysUserDetailsService {
         if (!sysUserResult.getCode().equals(200)) {
             throw new RuntimeException("注册失败: " + sysUserResult.getMsg());
         }
+    }
+
+    public SysUser userInfo() {
+        SysUser data = remoteUserService.getUserInfo(SecurityUtil.getLoginUser().getUsername()).getData();
+        data.setPassword(null);
+        return data;
     }
 }

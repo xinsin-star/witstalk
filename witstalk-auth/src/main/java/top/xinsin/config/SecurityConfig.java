@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login",
                                 "/register",
-                                "/generateKey"
+                                "/userInfo"
                         )
                         .permitAll()
                         .anyRequest().authenticated()

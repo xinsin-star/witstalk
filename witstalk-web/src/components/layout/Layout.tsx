@@ -1,39 +1,32 @@
-import React, {useEffect} from "react";
 import {Outlet} from "react-router";
-import { Flex, Layout, message} from "antd";
-import {LeftMenu} from "~/components/layout/leftMenu";
-import {useNavigate} from 'react-router'
+import { Flex, Layout} from "antd";
+import TopMenu from "~/components/layout/TopMenu";
+import RightTab from "~/components/layout/RightTab";
 
 const {Header, Footer, Sider, Content} = Layout;
 
-export default function AppLayout({children}) {
-    const navigate = useNavigate();
-    const [messageApi] = message.useMessage();
-
-    // 检查当前是不是客户端的渲染
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            if (!window.localStorage.getItem("token")) {
-                messageApi.warning("请先登录!", 1).then(r => {
-                    navigate('/login');
-                })
-            }
-        }
-    })
-
+export default function AppLayout({children: any}) {
     return (
-        <Flex>
-            <Layout style={{height: "100vh", width: "100vw"}}>
-                <Header>Header</Header>
-                <Layout>
-                    <Sider width="15%">
-                        <LeftMenu/>
-                    </Sider>
-                    <Content>
-                        <Outlet/>
-                    </Content>
-                    <Footer>Footer</Footer>
-                </Layout>
+        <Flex gap="middle" wrap>
+            <Layout style={{height: "100%", width: "100vw"}}>
+                <Header style={{ background: "var(--cream-light)" }}>
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                    }}>
+                        <div>
+                            <TopMenu/>
+                        </div>
+                        <div>
+                            <RightTab/>
+                        </div>
+                    </div>
+                </Header>
+                <Content style={{height: "86vh", maxHeight: "86vh"}}>
+                    <Outlet/>
+                </Content>
+                <Footer style={{background: "var(--cream-light)"}}>Footer</Footer>
             </Layout>
         </Flex>
     )

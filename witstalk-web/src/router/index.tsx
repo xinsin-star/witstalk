@@ -8,30 +8,71 @@ const AppLayout = React.lazy(() => import("~/components/layout/Layout.tsx"));
 const AppIndex = React.lazy(() => import("~/pages/index.tsx"));
 const LoginPage = React.lazy(() => import("~/pages/login/index.tsx"));
 const RegisterPage = React.lazy(() => import("~/pages/register/index.tsx"));
+const WitstalkPage = React.lazy(() => import("~/pages/witstalk/index.tsx"));
+const FilePage = React.lazy(() => import("~/pages/file/index.tsx"));
+const GamePage = React.lazy(() => import("~/pages/game/index.tsx"));
+const SystemPage = React.lazy(() => import("~/pages/system/index.tsx"));
+
+const loading = () => {
+    return (<Spin size="large" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />)
+}
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: (
-            <Suspense fallback={<Spin size="large" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />}>
-                <AppLayout>children</AppLayout>
+            <Suspense fallback={loading()}>
+                <AppLayout> </AppLayout>
             </Suspense>
         ),
         errorElement: <ErrorBoundary error={{ status: 500 }} />,
         children: [
             {
-                index: true, element: (
-                    <Suspense fallback={<Spin size="large" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />}>
+                index: true,
+                element: (
+                    <Suspense fallback={loading()}>
                         <AppIndex/>
                     </Suspense>
                 ),
-            }
+            },
+            {
+                path: "witstalk",
+                element: (
+                    <Suspense fallback={loading()}>
+                        <WitstalkPage/>
+                    </Suspense>
+                ),
+            },
+            {
+                path: "file",
+                element: (
+                    <Suspense fallback={loading()}>
+                        <FilePage/>
+                    </Suspense>
+                ),
+            },
+            {
+                path: "game",
+                element: (
+                    <Suspense fallback={loading()}>
+                        <GamePage/>
+                    </Suspense>
+                ),
+            },
+            {
+                path: "system",
+                element: (
+                    <Suspense fallback={loading()}>
+                        <SystemPage/>
+                    </Suspense>
+                ),
+            },
         ]
     },
     {
         path: "/login",
         element: (
-            <Suspense fallback={<Spin size="large" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />}>
+            <Suspense fallback={loading()}>
                 <LoginPage/>
             </Suspense>
         ),
@@ -40,7 +81,7 @@ const router = createBrowserRouter([
     {
         path: "/register",
         element: (
-            <Suspense fallback={<Spin size="large" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />}>
+            <Suspense fallback={loading()}>
                 <RegisterPage/>
             </Suspense>
         ),

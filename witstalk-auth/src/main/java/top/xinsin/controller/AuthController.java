@@ -2,6 +2,7 @@ package top.xinsin.controller;
 
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
+import top.xinsin.api.system.domain.SysUser;
 import top.xinsin.domain.AuthUserRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,6 +13,7 @@ import top.xinsin.constants.CacheConstants;
 import top.xinsin.service.SysUserDetailsService;
 import top.xinsin.util.JwtUtil;
 import top.xinsin.util.Result;
+import top.xinsin.util.SecurityUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -47,5 +49,11 @@ public class AuthController {
     public Result<JSONObject> registerUser(@RequestBody AuthUserRequest userDetails) {
         sysUserDetailsService.register(userDetails);
         return Result.success();
+    }
+
+    @PostMapping("/userInfo")
+    public Result<SysUser> userInfo() {
+        SysUser sysUser = sysUserDetailsService.userInfo();
+        return Result.success(sysUser);
     }
 }

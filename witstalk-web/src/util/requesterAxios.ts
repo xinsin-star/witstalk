@@ -28,10 +28,10 @@ const responseInterceptors = (response) => {
             iv = keyStore.getState().key3
         }
         let decryptData = JSON.parse(aesDecrypt(encodeData, key as string, iv as string))
-        const token = decryptData.data.token;
-        if (token) {
-            window.localStorage.setItem("token", 'Bearer ' + token);
-        }
+        // const token = decryptData.data.token;
+        // if (token) {
+        //     window.localStorage.setItem("token", 'Bearer ' + token);
+        // }
         return decryptData;
     }
 };

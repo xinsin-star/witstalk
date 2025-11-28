@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card, Form, Input, Typography, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, ProfileOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
-import { useRegister } from '~/hook/useAuth.ts';
-import {showMessage} from "~/util/msg";
+import { showMessage } from "~/util/msg";
+import { register } from "~/api/user";
 
 const { Title, Paragraph } = Typography;
 const { Item } = Form;
@@ -11,15 +11,19 @@ const { Item } = Form;
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm<{username: string; password: string; confirmPassword: string; nickname: string; email: string}>();
-  const { register, isLoading } = useRegister();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onFinish = async (values: {username: string; password: string; confirmPassword: string; nickname: string; email: string}) => {
     const { username, password, nickname, email } = values;
-    const res = await register(username, password, nickname, email);
-    if (res.success) {
+    try {
+      setIsLoading(true);
+      await register(username, password, nickname, email);
+      setIsLoading(false);
       showMessage.success('注册成功，请登录');
       navigate('/login');
-    } else { 
+    } catch (err: any) {
+      console.log(err);
+      setIsLoading(false);
       showMessage.error('注册失败，请检查输入信息');
     }
   };

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Button, Card, Form, Input, Typography, Row, Col, Checkbox } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
-import { useLogin } from '~/hook/useAuth.ts';
-import {showMessage} from "~/util/msg";
+import { showMessage } from "~/util/msg";
+import { login } from '~/api/user';
+import { useUserStore } from '~/store/userStore';
 
 const { Title, Paragraph } = Typography;
 const { Item } = Form;
@@ -11,14 +12,27 @@ const { Item } = Form;
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm<{username: string; password: string}>();
-  const { login, isLoading } = useLogin();
+  const [isLoading, setIsLoading] = useState(false);
+  const { updateUserInfo } = useUserStore();
 
-  const onFinish = async (values: {username: string; password: string}) => {
-    const res = await login(values.username, values.password);
-    if (res.success) {
+  const onFinish = async (values: { username: string; password: string; remember: boolean}) => {
+    try {
+      setIsLoading(true);
+      const res = await login(values.username, values.password);
+      if (res.data) {
+        if (values.remember) {
+          window.localStorage.setItem("token", 'Bearer ' + res.data.token);
+        } else {
+          window.sessionStorage.setItem("token", 'Bearer ' + res.data.token);
+        }
+        await updateUserInfo();
+      }
+      setIsLoading(false);
       showMessage.success('登录成功！');
       navigate('/');
-    } else { 
+    } catch (err: any) {
+      console.log(err);
+      setIsLoading(false);
       showMessage.error('登录失败，请检查用户名和密码');
     }
   };
@@ -38,6 +52,7 @@ const LoginPage: React.FC = () => {
               layout="vertical"
               onFinish={onFinish}
               className="cream-form"
+              initialValues={{ remember: true }}
             >
               <Item
                 name="username"
@@ -78,7 +93,7 @@ const LoginPage: React.FC = () => {
               </Item>
               
               <Item name="remember" valuePropName="checked">
-                <Checkbox>记住我</Checkbox>
+                <Checkbox defaultChecked={true}>记住我</Checkbox>
                 <Button type="text" className="cream-link">忘记密码？</Button>
               </Item>
               
