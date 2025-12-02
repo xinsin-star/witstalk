@@ -12,6 +12,7 @@ import top.xinsin.listener.MyUpdateListener;
 @Table(value = "sys_menu", onInsert = MyInsertListener.class, onUpdate = MyUpdateListener.class)
 public class SysMenu extends BaseEntity {
     private String menuName;
+    private String menuPath;
     private String menuType;
     private String perms;
     private Long parentId;

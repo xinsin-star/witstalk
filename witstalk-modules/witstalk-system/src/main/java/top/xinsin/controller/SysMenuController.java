@@ -9,6 +9,7 @@ import top.xinsin.service.impl.SysMenuServiceImpl;
 import top.xinsin.util.PageResult;
 import top.xinsin.util.Result;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -66,6 +67,17 @@ public class SysMenuController {
     @PostMapping("/delete")
     public Result<Boolean> delete(@RequestParam("id") Long id) {
         return Result.success(sysMenuService.removeById(id));
+    }
+
+    /**
+     * 删除多个
+     * @param ids 字典类型IDs
+     * @return 操作结果
+     */
+    @PostMapping("/remove")
+    public Result<Boolean> remove(@RequestParam("ids") String ids) {
+        String[] split = ids.split(",");
+        return Result.success(sysMenuService.removeByIds(Arrays.asList(split)));
     }
 
     /**

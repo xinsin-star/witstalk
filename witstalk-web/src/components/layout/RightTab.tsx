@@ -43,7 +43,7 @@ export default function RightTab() {
                             display: 'flex',
                             flexDirection: 'column',
                         }}>
-                            <Button type="text">个人中心</Button>
+                            <Button type="text" onClick={() => navigate('/profile')}>个人中心</Button>
                             <Button type="text" style={{ color: 'var(--cream-primary)'}} onClick={logout}>退出登录</Button>
                         </div>
                     </div>
