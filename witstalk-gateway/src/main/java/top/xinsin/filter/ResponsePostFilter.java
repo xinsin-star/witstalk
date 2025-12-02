@@ -64,7 +64,7 @@ public class ResponsePostFilter implements GlobalFilter, Ordered {
                         log.info("原始响应内容: {}", responseStr);
 
                         // 在这里可以修改响应内容
-                        String modifiedResponse = modifyResponse(responseStr, mutate);
+                        String modifiedResponse = modifyResponse(responseStr, mutate, exchange);
 
                         // 返回修改后的响应
                         return bufferFactory.wrap(modifiedResponse.getBytes(StandardCharsets.UTF_8));
@@ -88,20 +88,27 @@ public class ResponsePostFilter implements GlobalFilter, Ordered {
      * 修改响应内容的方法
      */
     @SneakyThrows
-    private String modifyResponse(String originalResponse, ServerHttpRequest.Builder mutate) {
+    private String modifyResponse(String originalResponse, ServerHttpRequest.Builder mutate, ServerWebExchange exchange) {
         try {
             JSONObject.parseObject(originalResponse, JSONObject.class);
-            AtomicReference<String> key = new AtomicReference<>("");
-            AtomicReference<String> iv = new AtomicReference<>("");
-            mutate.headers(headers -> {
-                if (headers.containsKey("aes-key")) {
-                    key.set(URLDecoder.decode(Objects.requireNonNull(headers.get("aes-key")).get(0), StandardCharsets.UTF_8));
-                }
-                if (headers.get("aes-iv") != null) {
-                    iv.set(URLDecoder.decode(Objects.requireNonNull(headers.get("aes-iv")).get(0), StandardCharsets.UTF_8));
-                }
-            });
-            return Base64.getEncoder().encodeToString(aesComponent.encrypt(originalResponse, key.get(), iv.get()).getBytes(StandardCharsets.UTF_8));
+            String iv = "", key = "";
+            Object attrIv = exchange.getAttributes().get("aes-iv");
+            if (attrIv instanceof String aesIv) {
+                iv = URLDecoder.decode(aesIv, StandardCharsets.UTF_8);
+            }
+            Object attrKey = exchange.getAttributes().get("aes-key");
+            if (attrKey instanceof String aesKey) {
+                key = URLDecoder.decode(aesKey, StandardCharsets.UTF_8);
+            }
+//            mutate.headers(headers -> {
+//                if (headers.containsKey("aes-key")) {
+//                    key.set(URLDecoder.decode(Objects.requireNonNull(headers.get("aes-key")).get(0), StandardCharsets.UTF_8));
+//                }
+//                if (headers.get("aes-iv") != null) {
+//                    iv.set(URLDecoder.decode(Objects.requireNonNull(headers.get("aes-iv")).get(0), StandardCharsets.UTF_8));
+//                }
+//            });
+            return Base64.getEncoder().encodeToString(aesComponent.encrypt(originalResponse, key, iv).getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return originalResponse;

@@ -1,9 +1,9 @@
 plugins {
     id("java")
     // 声明 Spring Boot 插件（不直接应用）
-    id("org.springframework.boot") version "3.2.5" apply false
+    id("org.springframework.boot") version "3.5.8" apply false
     // 声明依赖管理插件（关键：必须显式声明）
-    id("io.spring.dependency-management") version "1.1.4" apply false
+    id("io.spring.dependency-management") version "1.1.7" apply false
 }
 
 allprojects {
@@ -31,8 +31,8 @@ subprojects {
     // 3. 使用插件提供的扩展（此时已能识别）
     configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
         imports {
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
-            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2023.0.1.0")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2025.0.0.0")
         }
     }
 

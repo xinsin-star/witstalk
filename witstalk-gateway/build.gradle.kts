@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation(project("::witstalk-common"))
 
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.3.2")
     //    jwt
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
