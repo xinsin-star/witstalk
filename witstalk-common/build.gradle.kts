@@ -18,4 +18,6 @@ dependencies {
 
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.4")
     runtimeOnly("org.glassfish.jaxb:jaxb-runtime:4.0.4")
+    // 新版本（Spring 4.0.0）中Redis的序列化需要依赖这个模块
+    compileOnly("tools.jackson.core:jackson-databind:3.0.2")
 }
