@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
@@ -58,7 +59,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (log.isDebugEnabled()) {
-            log.debug("authFilter.request => {}", JSONObject.toJSONString(exchange.getRequest()));
+            // log.debug("authFilter.request => {}", JSONObject.toJSONString(exchange.getRequest()));
         }
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
@@ -113,14 +114,14 @@ public class AuthFilter implements GlobalFilter, Ordered {
                     String requestBody = new String(bytes, StandardCharsets.UTF_8);
 
                     // 处理请求体中的data数据
-                    String processedBody = processRequestBody(requestBody, mutate);
+                    String processedBody = processRequestBody(requestBody, mutate, exchange);
 
                     // 创建新的DataBuffer包含处理后的数据
                     DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
                     DataBuffer processedBuffer = bufferFactory.wrap(processedBody.getBytes(StandardCharsets.UTF_8));
-
+                    ServerHttpRequest req = mutate.build();
                     // 创建装饰器，返回处理后的请求体
-                    ServerHttpRequestDecorator decoratedRequest = new ServerHttpRequestDecorator(request) {
+                    ServerHttpRequestDecorator decoratedRequest = new ServerHttpRequestDecorator(req) {
                         @Override
                         @NonNull
                         public Flux<DataBuffer> getBody() {
@@ -135,7 +136,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                         @NonNull
                         public HttpHeaders getHeaders() {
                             // 此处new一个新的Map是为了复制原值，因为原始请求头是只读的
-                            HttpHeaders httpHeaders = new HttpHeaders(new LinkedMultiValueMap<>(request.getHeaders()));
+                            HttpHeaders httpHeaders = new HttpHeaders(new LinkedMultiValueMap<>(req.getHeaders()));
                             // 移除请求头中的Content-Length值
                             httpHeaders.remove(HttpHeaders.CONTENT_LENGTH.toLowerCase());
                             httpHeaders.remove(HttpHeaders.CONTENT_LENGTH);
@@ -166,15 +167,17 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
     @SneakyThrows
-    private String processRequestBody(String requestBody, ServerHttpRequest.Builder request) {
+    private String processRequestBody(String requestBody, ServerHttpRequest.Builder request, ServerWebExchange exchange) {
         requestBody = requestBody.replaceAll("\"", "");
         String base64Content = new String(Base64.getDecoder().decode(requestBody), StandardCharsets.UTF_8);
         String encodeKeyIV = base64Content.substring(base64Content.length() - 344);
         String decrypt = rsaComponent.decrypt(encodeKeyIV);
         String key = decrypt.substring(0, 44);
         String iv = decrypt.substring(44);
-        request.header("aes-iv", URLEncoder.encode(iv, StandardCharsets.UTF_8));
-        request.header("aes-key", URLEncoder.encode(key, StandardCharsets.UTF_8));
+        exchange.getAttributes().put("aes-iv", URLEncoder.encode(iv, StandardCharsets.UTF_8));
+        exchange.getAttributes().put("aes-key", URLEncoder.encode(key, StandardCharsets.UTF_8));
+//        request.header("aes-iv", URLEncoder.encode(iv, StandardCharsets.UTF_8));
+//        request.header("aes-key", URLEncoder.encode(key, StandardCharsets.UTF_8));
         return cleanControlCharacters(aesComponent.decrypt(base64Content.substring(0, base64Content.length() - 344), key, iv));
     }
 
