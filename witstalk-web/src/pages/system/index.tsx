@@ -56,7 +56,7 @@ export default function System() {
                     <img
                         alt="icon"
                         className="system-card-icon"
-                        src={ item.img }
+                        src={ item.img as string }
                     />
                 }
             >
@@ -79,5 +79,5 @@ export default function System() {
                 </Masonry>
             </div>
         </>
-    )
+    );
 }
