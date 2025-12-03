@@ -12,6 +12,7 @@ subprojects {
     dependencies {
         implementation(project("::witstalk-common"))
         implementation(project("::witstalk-api"))
+        implementation(project("::witstalk-common-autoconfigure"))
 
         implementation("org.springframework.boot:spring-boot-starter-web")
 //    mybatis flex + druid连接池 + 驱动
