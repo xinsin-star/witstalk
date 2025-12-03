@@ -3,6 +3,7 @@ package top.xinsin.controller;
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import top.xinsin.api.system.domain.SysUser;
+import top.xinsin.api.system.domain.vo.SysUserAndAuthVO;
 import top.xinsin.domain.AuthUserRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,8 +53,8 @@ public class AuthController {
     }
 
     @PostMapping("/userInfo")
-    public Result<SysUser> userInfo() {
-        SysUser sysUser = sysUserDetailsService.userInfo();
+    public Result<SysUserAndAuthVO> userInfo() {
+        SysUserAndAuthVO sysUser = sysUserDetailsService.userInfo();
         return Result.success(sysUser);
     }
 }

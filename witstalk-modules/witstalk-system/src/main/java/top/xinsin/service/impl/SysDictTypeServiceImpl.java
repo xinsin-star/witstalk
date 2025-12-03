@@ -1,13 +1,8 @@
 package top.xinsin.service.impl;
 
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.xinsin.domain.SysDictType;
@@ -54,7 +49,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
             QueryWrapper queryWrapper = QueryWrapper.create()
                     .eq(SysDictTypeItem::getDictTypeId, dictType.getId());
             List<SysDictTypeItem> dictTypeItems = sysDictTypeItemService.list(queryWrapper);
-            redisTemplate.opsForSet().add(DICT_TYPE_KEY + dictType.getDictType(), dictTypeItems.toArray(new SysDictTypeItem[0]));
+            redisTemplate.opsForSet().add(DICT_TYPE_KEY + dictType.getDictType(), dictTypeItems.toArray(new Object[0]));
         }
         return null;
     }

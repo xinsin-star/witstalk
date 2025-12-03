@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import top.xinsin.api.system.RemoteUserService;
 import top.xinsin.api.system.domain.SysUser;
+import top.xinsin.api.system.domain.vo.SysUserAndAuthVO;
 import top.xinsin.util.Result;
 
 
@@ -13,7 +14,7 @@ public class RemoteUserFallbackFactory implements FallbackFactory<RemoteUserServ
     public RemoteUserService create(Throwable cause) {
         return new RemoteUserService() {
             @Override
-            public Result<top.xinsin.api.system.domain.SysUser> getUserInfo(String username) {
+            public Result<SysUserAndAuthVO> getUserInfo(String username) {
                 log.error("RemoteUserService getUserInfo fallback: {}", cause.getMessage());
                 return Result.fail("RemoteUserService getUserInfo fallback: " + cause.getMessage());
             }

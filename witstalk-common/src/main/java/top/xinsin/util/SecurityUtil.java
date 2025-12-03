@@ -76,6 +76,8 @@ public class SecurityUtil {
             return new LoginUser()
                     .setUsername(jsonObject.getString("username"))
                     .setNickName(jsonObject.getString("nickName"))
+                    .setRoles(jsonObject.getList("roles", String.class))
+                    .setPermissions(jsonObject.getList("permissions", String.class))
                     .setUserId(jsonObject.getLong("id"));
         } catch (MalformedJwtException e) {
             // 处理JWT格式错误

@@ -1,5 +1,6 @@
 package top.xinsin.service;
 
+import top.xinsin.api.system.domain.vo.SysUserAndAuthVO;
 import top.xinsin.domain.AuthUserRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,8 +19,8 @@ public class SysUserDetailsService {
     }
 
     public AuthUserRequest login(String username, String password) {
-        Result<SysUser> userInfo = remoteUserService.getUserInfo(username);
-        SysUser sysUser = userInfo.getData();
+        Result<SysUserAndAuthVO> userInfo = remoteUserService.getUserInfo(username);
+        SysUserAndAuthVO sysUser = userInfo.getData();
         if (sysUser == null) {
             throw new UsernameNotFoundException("用户不存在");
         }
@@ -32,6 +33,8 @@ public class SysUserDetailsService {
         authUserRequest.setUsername(sysUser.getUsername());
         authUserRequest.setPassword(sysUser.getPassword());
         authUserRequest.setNickName(sysUser.getNickName());
+        authUserRequest.setRoles(sysUser.getRoles());
+        authUserRequest.setPermissions(sysUser.getPerms());
         authUserRequest.setId(sysUser.getId());
         return authUserRequest;
     }
@@ -44,8 +47,8 @@ public class SysUserDetailsService {
         }
     }
 
-    public SysUser userInfo() {
-        SysUser data = remoteUserService.getUserInfo(SecurityUtil.getLoginUser().getUsername()).getData();
+    public SysUserAndAuthVO userInfo() {
+        SysUserAndAuthVO data = remoteUserService.getUserInfo(SecurityUtil.getLoginUser().getUsername()).getData();
         data.setPassword(null);
         return data;
     }
