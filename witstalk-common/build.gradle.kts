@@ -18,4 +18,5 @@ dependencies {
 
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.4")
     runtimeOnly("org.glassfish.jaxb:jaxb-runtime:4.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-web")
 }
