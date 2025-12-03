@@ -3,16 +3,17 @@ import { persist } from 'zustand/middleware';
 import { userInfo } from '~/api/user';
 
 interface UserStoreState {
-    userInfo: {
-        id: null | string;
-        nickName: null | string;
-        email: null | string;
-        username: null | string;
-        avatar: null | string;
-        createTime: null | string;
-        updateTime: null | string;
-    };
-    permissions: string[];
+  userInfo: {
+      id: null | string;
+      nickName: null | string;
+      email: null | string;
+      username: null | string;
+      avatar: null | string;
+      createTime: null | string;
+      updateTime: null | string;
+  };
+  permissions: string[];
+  roles: string[];
 }
 
 interface UserStore extends UserStoreState{
@@ -20,6 +21,8 @@ interface UserStore extends UserStoreState{
     restartUserInfo: () => void;
     setPermissions: (permissions: string[]) => void;
     hasPermission: (permission: string) => boolean;
+    setRoles: (roles: string[]) => void;
+    hasRole: (role: string) => boolean;
 }
 
 export const useUserStore = create(
@@ -47,7 +50,8 @@ export const useUserStore = create(
             createTime: res.data.createTime || null,
             updateTime: res.data.updateTime || null,
           },
-          permissions: res.data.permissions || []
+          permissions: res.data.perms || [],
+          roles: res.data.roles || []
         });
       },
       restartUserInfo: () => {
@@ -61,7 +65,8 @@ export const useUserStore = create(
             createTime: null,
             updateTime: null,
           },
-          permissions: []
+          permissions: [],
+          roles: []
         });
       },
       // 设置权限列表
@@ -72,6 +77,15 @@ export const useUserStore = create(
       hasPermission: (permission: string) => {
         const { permissions } = get();
         return permissions.includes(permission);
+      },
+      // 设置角色列表
+      setRoles: (roles: string[]) => {
+        set({ roles });
+      },
+      // 检查是否有角色
+      hasRole: (role: string) => {
+        const { roles } = get();
+        return roles.includes(role);
       }
     }),
     {
@@ -89,7 +103,7 @@ export const useUserStore = create(
           sessionStorage.removeItem(name);
         }
       },
-      partialize: (state: UserStore): Pick<UserStore, 'userInfo' | 'permissions'> => ({ userInfo: state.userInfo, permissions: state.permissions }),
+      partialize: (state: UserStore): Pick<UserStore, 'userInfo' | 'permissions' | 'roles'> => ({ userInfo: state.userInfo, permissions: state.permissions, roles: state.roles }),
     }
   )
 );

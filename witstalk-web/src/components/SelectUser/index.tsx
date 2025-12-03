@@ -62,8 +62,8 @@ interface User {
 }
 
 interface SelectUserProps {
-  value?: number | number[];
-  onChange?: (value: number | number[]) => void;
+  value?: number | number[] | User | User[];
+  onChange?: (value: number | number[] | User | User[]) => void;
   placeholder?: string;
   mode?: 'single' | 'multiple';
   style?: React.CSSProperties;
@@ -85,15 +85,33 @@ export default function SelectUser({
   const [searchText, setSearchText] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [selectedValues, setSelectedValues] = useState<number[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
   const [open, setOpen] = useState(false); // 手动控制下拉框的显示和隐藏
 
   // 初始化选中值
   useEffect(() => {
     if (value) {
-      setSelectedValues(Array.isArray(value) ? value : [value]);
+      if (Array.isArray(value)) {
+        // 多选模式
+        if (value.length > 0 && typeof value[0] === 'object') {
+          // 如果是User对象数组
+          setSelectedUserIds(value.map(user => (user as User).userId));
+        } else {
+          // 如果是number数组
+          setSelectedUserIds(value as number[]);
+        }
+      } else {
+        // 单选模式
+        if (typeof value === 'object') {
+          // 如果是User对象
+          setSelectedUserIds([(value as User).userId]);
+        } else {
+          // 如果是number
+          setSelectedUserIds(value ? [value] : []);
+        }
+      }
     } else {
-      setSelectedValues([]);
+      setSelectedUserIds([]);
     }
   }, [value]);
 
@@ -127,21 +145,31 @@ export default function SelectUser({
 
   // 处理用户选择
   const handleUserSelect = (userId: number) => {
-    let newSelectedValues: number[];
+    let newSelectedUserIds: number[];
     if (mode === 'multiple') {
       // 多选模式
-      if (selectedValues.includes(userId)) {
-        newSelectedValues = selectedValues.filter(id => id !== userId);
+      if (selectedUserIds.includes(userId)) {
+        newSelectedUserIds = selectedUserIds.filter(id => id !== userId);
       } else {
-        newSelectedValues = [...selectedValues, userId];
+        newSelectedUserIds = [...selectedUserIds, userId];
       }
     } else {
       // 单选模式
-      newSelectedValues = [userId];
+      newSelectedUserIds = [userId];
     }
-    setSelectedValues(newSelectedValues);
+    setSelectedUserIds(newSelectedUserIds);
+    
     if (onChange) {
-      onChange(mode === 'multiple' ? newSelectedValues : newSelectedValues[0]);
+      // 获取选中的用户对象
+      const selectedUsers = users.filter(user => newSelectedUserIds.includes(user.id));
+      
+      if (mode === 'multiple') {
+        // 多选模式返回User对象数组
+        onChange(selectedUsers);
+      } else {
+        // 单选模式返回单个User对象或undefined
+        onChange(selectedUsers[0] || undefined);
+      }
     }
   };
 
@@ -195,7 +223,7 @@ export default function SelectUser({
                     <Space size="middle" style={{ alignItems: 'center' }}>
                       <span style={{ fontWeight: '500', fontSize: '14px' }}>{user.nickName || user.username}</span>
                       <Checkbox
-                        checked={selectedValues.includes(user.id)}
+                        checked={selectedUserIds.includes(user.id)}
                         onChange={(e) => {
                           e.stopPropagation(); // 阻止点击事件冒泡
                           handleUserSelect(user.id);
@@ -231,13 +259,38 @@ export default function SelectUser({
     </div>
   );
 
+  // 从value中提取出userId，用于Select组件的value属性
+  const getSelectValue = () => {
+    if (value) {
+      if (Array.isArray(value)) {
+        // 多选模式
+        if (value.length > 0 && typeof value[0] === 'object') {
+          // 如果是User对象数组
+          return value.map(user => (user as User).id);
+        } else {
+          // 如果是number数组
+          return value as number[];
+        }
+      } else {
+        // 单选模式
+        if (typeof value === 'object') {
+          // 如果是User对象
+          return (value as User).id;
+        } else {
+          // 如果是number
+          return value as number;
+        }
+      }
+    }
+    return undefined;
+  };
+
   return (
     <Select
-      value={value}
+      value={getSelectValue()}
       onChange={(val) => {
-        if (onChange) {
-          onChange(val);
-        }
+        // 内部Select组件的onChange事件，这里我们主要依赖自定义的handleUserSelect处理
+        // 但仍然需要监听这个事件，以确保受控组件的正确性
       }}
       placeholder={placeholder}
       mode={mode === 'multiple' ? 'multiple' : undefined}

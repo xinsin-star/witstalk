@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import top.xinsin.api.system.RemoteUserService;
 import top.xinsin.domain.SysDictType;
 import top.xinsin.domain.SysUser;
+import top.xinsin.domain.vo.SysUserAndAuthVO;
 import top.xinsin.entity.LoginUser;
 import top.xinsin.service.impl.SysUserServiceImpl;
 import top.xinsin.util.PageResult;
@@ -87,10 +88,10 @@ public class SysUserController {
     }
 
     @GetMapping("/getUserInfo")
-    public Result<SysUser> getUserInfo(String username) {
-        QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getUsername, username);
-        return Result.success(sysUserServiceImpl.getOne(queryWrapper));
+    public Result<SysUserAndAuthVO> getUserInfo(String username) {
+        return Result.success(sysUserServiceImpl.getUserInfoByUsername(username));
     }
+
     @GetMapping("/register")
     public Result<SysUser> register(@RequestParam("username") String username,@RequestParam("nickName") String nickName,@RequestParam("password") String password) {
         QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getUsername, username);

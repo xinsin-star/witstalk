@@ -410,6 +410,7 @@ export default function Menu() {
                     form={form}
                     layout="vertical"
                     onFinish={handleSubmit}
+                    disabled={operationType === 'view'}
                 >
                     <Form.Item
                         name="parentId"
