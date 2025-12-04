@@ -32,17 +32,18 @@ export const request = (config: AxiosRequestConfig) => {
  * @param url 地址
  * @param param 参数
  */
-export const axios = (url: string, param: requestParams) => {
-    let data = {
+export const axios = async (url: string, param: requestParams) => {
+    const data = {
         url: url,
         method: param.method,
         data: null,
         params: null
     }
-    if (param.method.toUpperCase() === "GET" || param.method.toUpperCase() === "PUT" ) {
+    if (param.method.toUpperCase() === "GET" || param.method.toUpperCase() === "PUT") {
         data['params'] = param.data;
     } else {
         data['data'] = param.data;
     }
-    return requesterAxios(data).then(res => res.data)
+    const res = await requesterAxios(data);
+    return res.data;
 }

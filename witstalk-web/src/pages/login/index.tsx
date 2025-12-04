@@ -30,8 +30,8 @@ const LoginPage: React.FC = () => {
       setIsLoading(false);
       showMessage.success('登录成功！');
       navigate('/');
-    } catch (err: any) {
-      console.log(err);
+    } catch (err) {
+      console.error(err);
       setIsLoading(false);
       showMessage.error('登录失败，请检查用户名和密码');
     }

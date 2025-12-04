@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
     Button,
-    Space,
     Table,
     Spin,
     Empty,
@@ -63,7 +62,7 @@ const RoleUser: React.FC<RoleUserBindingProps> = ({
                 }
             });
             setSelectedUsers(response?.data || []);
-        } catch (error) {
+        } catch {
             showMessage.error('获取角色用户列表失败');
         } finally {
             setLoading(false);
@@ -99,7 +98,7 @@ const RoleUser: React.FC<RoleUserBindingProps> = ({
                     });
                     showMessage.success('删除成功');
                     getRoleUsers();
-                } catch (error) {
+                } catch {
                     showMessage.error('删除失败');
                 } finally {
                     setDeleteLoading(false);
@@ -127,7 +126,7 @@ const RoleUser: React.FC<RoleUserBindingProps> = ({
             showMessage.success('保存成功');
             onSaveSuccess();
             onClose();
-        } catch (error) {
+        } catch {
             showMessage.error('保存失败');
         } finally {
             setSaveLoading(false);
@@ -159,7 +158,7 @@ const RoleUser: React.FC<RoleUserBindingProps> = ({
             key: 'action',
             align: 'center',
             width: 100,
-            render: (_: any, record: User) => (
+            render: (_: unknown, record: User) => (
                 <Button 
                     type="link" 
                     danger 

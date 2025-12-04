@@ -206,7 +206,7 @@ export default function Dict() {
                     });
                     showMessage.success('删除成功');
                     mutate();
-                } catch (error) {
+                } catch {
                     showMessage.error('删除失败');
                 }
             }
@@ -244,7 +244,7 @@ export default function Dict() {
             }
             setDrawerVisible(false);
             mutate();
-        } catch (error) {
+        } catch {
             showMessage.error('操作失败');
         }
     };
@@ -262,7 +262,7 @@ export default function Dict() {
                 method: 'GET'
             });
             showMessage.success('缓存刷新成功');
-        } catch (error) {
+        } catch {
             showMessage.error('缓存刷新失败');
         }
     };

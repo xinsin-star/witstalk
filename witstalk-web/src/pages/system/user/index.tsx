@@ -53,7 +53,7 @@ export default function User() {
             key: 'index',
             align: 'center',
             width: 50,
-            render: (_: string, __: any, index: number) => index + 1,
+            render: (_: string, __: unknown, index: number) => index + 1,
         },
         {
             title: '用户名',
@@ -116,7 +116,7 @@ export default function User() {
             fixed: 'end',
             width: 150,
             align: 'center',
-            render: (_: any, record: any) => (
+            render: (_: unknown, record: any) => (
                 <Space size="middle">
                     <Button type="link" icon={<EyeOutlined />} onClick={() => handleView(record)} />
                     <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
@@ -204,7 +204,7 @@ export default function User() {
                     });
                     showMessage.success('删除成功');
                     mutate();
-                } catch (error) {
+                } catch {
                     showMessage.error('删除失败');
                 }
             }
@@ -273,7 +273,7 @@ export default function User() {
             }
             setDrawerVisible(false);
             mutate();
-        } catch (error) {
+        } catch {
             showMessage.error('操作失败');
         }
     };

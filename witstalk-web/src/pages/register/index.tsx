@@ -21,8 +21,8 @@ const RegisterPage: React.FC = () => {
       setIsLoading(false);
       showMessage.success('注册成功，请登录');
       navigate('/login');
-    } catch (err: any) {
-      console.log(err);
+    } catch (err) {
+      console.error(err);
       setIsLoading(false);
       showMessage.error('注册失败，请检查输入信息');
     }

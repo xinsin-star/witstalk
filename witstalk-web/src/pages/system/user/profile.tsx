@@ -90,7 +90,7 @@ export default function Profile() {
       showMessage.success('头像更新成功!');
       await updateUserInfo(); // 更新用户信息
       setAvatarFile(null);
-    } catch (error) {
+    } catch {
       showMessage.error('头像更新失败!');
     } finally {
       setLoading(false);
@@ -109,7 +109,7 @@ export default function Profile() {
 
       showMessage.success('个人信息更新成功!');
       await updateUserInfo(); // 更新用户信息
-    } catch (error) {
+    } catch {
       showMessage.error('个人信息更新失败!');
     } finally {
       setLoading(false);
@@ -128,7 +128,7 @@ export default function Profile() {
 
       showMessage.success('密码更新成功!');
       passwordForm.resetFields();
-    } catch (error) {
+    } catch {
       showMessage.error('密码更新失败!');
     } finally {
       setLoading(false);
