@@ -12,4 +12,5 @@ repositories {
 dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation(project(":witstalk-common"))
+    implementation(project(":witstalk-entities"))
 }
