@@ -1,10 +1,10 @@
 package top.xinsin.api.system.factory;
 
+import cn.wzpmc.entities.system.SysUser;
+import cn.wzpmc.entities.system.vo.SysUserAndAuthVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import top.xinsin.api.system.RemoteUserService;
-import top.xinsin.api.system.domain.SysUser;
-import top.xinsin.api.system.domain.vo.SysUserAndAuthVO;
 import top.xinsin.util.Result;
 
 
