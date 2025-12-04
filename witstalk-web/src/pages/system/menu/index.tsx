@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Table,
     Button,
@@ -7,11 +7,9 @@ import {
     Form,
     Modal,
     Space,
-    Select,
-    Tree,
-    TreeSelect
+    Select
 } from 'antd';
-import { ColumnsType } from 'antd/es/table';
+import { type ColumnsType } from 'antd/es/table';
 import {
     PlusOutlined,
     EditOutlined,
@@ -60,7 +58,7 @@ export default function Menu() {
     const [dataSource, setDataSource] = useState<Menu[]>([]);
     const [operationType, setOperationType] = useState<'add' | 'edit' | 'view'>('add');
     const [parentMenuOptions, setParentMenuOptions] = useState<{ value: number; label: string }[]>([]);
-    const [menuTree, setMenuTree] = useState<any[]>([]);
+    const [, setMenuTree] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -117,7 +115,7 @@ export default function Menu() {
     };
 
     // 获取菜单列表数据
-    const { data, error, mutate } = requestSWR({
+    const { data, mutate } = requestSWR({
         url: url.list,
         method: 'POST',
         data: {
@@ -217,7 +215,7 @@ export default function Menu() {
                     });
                     showMessage.success('删除成功');
                     mutate();
-                } catch (error) {
+                } catch {
                     showMessage.error('删除失败');
                 } finally {
                     setLoading(false);
@@ -253,7 +251,7 @@ export default function Menu() {
             }
             setDrawerVisible(false);
             mutate();
-        } catch (error) {
+        } catch {
             showMessage.error('操作失败');
         } finally {
             setSubmitLoading(false);
@@ -340,7 +338,7 @@ export default function Menu() {
             fixed: 'end',
             width: 150,
             align: 'center',
-            render: (_: any, record: any) => (
+            render: (_: unknown, record: any) => (
                 <Space size="middle">
                     <Button type="link" icon={<EyeOutlined />} onClick={() => handleView(record)} />
                     <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />

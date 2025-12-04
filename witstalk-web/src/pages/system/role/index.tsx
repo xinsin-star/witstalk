@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Table,
     Button,
@@ -6,9 +6,8 @@ import {
     Form,
     Modal,
     Space,
-    Select,
 } from 'antd';
-import { ColumnsType } from 'antd/es/table';
+import { type ColumnsType } from 'antd/es/table';
 import {
     PlusOutlined,
     EditOutlined,
@@ -24,8 +23,6 @@ import WtDrawer from '~/components/WtDrawer';
 import WtPagination from '~/components/WtPagination';
 import RoleMenu from './roleMenu';
 import RoleUser from './roleUser';
-
-const { Option } = Select;
 
 const url = {
     list: '/system/sysRole/list',
@@ -68,7 +65,7 @@ export default function Role() {
     const [selectedRoleName, setSelectedRoleName] = useState<string>('');
 
     // 获取角色列表数据
-    const { data, error, mutate } = requestSWR({
+    const { data, mutate } = requestSWR({
         url: url.list,
         method: 'POST',
         data: {
@@ -151,7 +148,7 @@ export default function Role() {
                     });
                     showMessage.success('删除成功');
                     mutate();
-                } catch (error) {
+                } catch {
                     showMessage.error('删除失败');
                 } finally {
                     setLoading(false);
@@ -187,7 +184,7 @@ export default function Role() {
             }
             setDrawerVisible(false);
             mutate();
-        } catch (error) {
+        } catch {
             showMessage.error('操作失败');
         } finally {
             setSubmitLoading(false);
@@ -304,7 +301,7 @@ export default function Role() {
             fixed: 'end',
             width: 250,
             align: 'center',
-            render: (_: any, record: any) => (
+            render: (_: unknown, record: any) => (
                 <Space size="middle">
                     <Button type="link" icon={<EyeOutlined />} onClick={() => handleView(record)} />
                     <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />

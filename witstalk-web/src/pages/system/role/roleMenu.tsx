@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
     Tree,
     Button,
-    Space,
     Spin
 } from 'antd';
 import {
@@ -123,7 +122,7 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
             
             // 转换为Tree组件所需格式
             setMenuTreeData(convertToTreeNodes(menuTree));
-        } catch (error) {
+        } catch {
             showMessage.error('获取菜单树失败');
         } finally {
             setTreeLoading(false);
@@ -146,7 +145,7 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
             // 转换为Tree组件所需的key格式
             const menuIds = response.data.records.map((item: any) => item.menuId.toString());
             setCheckedKeys(menuIds);
-        } catch (error) {
+        } catch {
             showMessage.error('获取角色菜单失败');
         } finally {
             setMenuLoading(false);
@@ -189,7 +188,7 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
             showMessage.success('保存成功');
             onSaveSuccess();
             onClose();
-        } catch (error) {
+        } catch {
             showMessage.error('保存失败');
         } finally {
             setSaveLoading(false);

@@ -1,5 +1,5 @@
+import type {AxiosError, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import axios from "axios";
-import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import {showMessage} from "~/util/msg";
 import {aesDecrypt, aesEncrypt, generateAesKeyAndIv, rsaEncrypt} from "~/util/encryption.ts";
 import {useKeyStore} from "~/store/keyStore.ts";
@@ -22,18 +22,17 @@ const responseInterceptors = (response: AxiosResponse) => {
             return response.data
         }
     } else {
-        let encodeData = CryptoJS.enc.Base64.parse(response.data).toString(CryptoJS.enc.Utf8)
+        const encodeData = CryptoJS.enc.Base64.parse(response.data).toString(CryptoJS.enc.Utf8)
         let key: string | null = '', iv: string | null = ''
         if (useKeyStore.getState().key2 && useKeyStore.getState().key3) {
             key = useKeyStore.getState().key2
             iv = useKeyStore.getState().key3
         }
-        let decryptData = JSON.parse(aesDecrypt(encodeData, key as string, iv as string))
         // const token = decryptData.data.token;
         // if (token) {
         //     window.localStorage.setItem("token", 'Bearer ' + token);
         // }
-        return decryptData;
+        return JSON.parse(aesDecrypt(encodeData, key as string, iv as string));
     }
 };
 const responseInterceptorsError = (error: AxiosError) => {
@@ -50,9 +49,9 @@ const responseInterceptorsError = (error: AxiosError) => {
 instance.interceptors.response.use(responseInterceptors, responseInterceptorsError);
 const requestInterceptors = (request: InternalAxiosRequestConfig) => {
     // 只有post请求才会加解密
-    let flag = request.method?.toString().toUpperCase() === "POST" || request.method?.toString().toUpperCase() === "PUT";
+    const flag = request.method?.toString().toUpperCase() === "POST" || request.method?.toString().toUpperCase() === "PUT";
     if (flag) {
-        let data = request.params || request.data
+        const data = request.params || request.data
         let key: string | null = '', iv: string | null = ''
         if (useKeyStore.getState().key2 && useKeyStore.getState().key3) {
             key = useKeyStore.getState().key2!
@@ -67,7 +66,7 @@ const requestInterceptors = (request: InternalAxiosRequestConfig) => {
         if (data) {
             encodeRequestData = aesEncrypt(JSON.stringify(data), key as string, iv as string)
         }
-        let encodeKeyIV = rsaEncrypt(key + iv, useKeyStore.getState().key1)
+        const encodeKeyIV = rsaEncrypt(key + iv, useKeyStore.getState().key1)
         request.data = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encodeRequestData + encodeKeyIV))
     }
     const token = window.localStorage.getItem("token");

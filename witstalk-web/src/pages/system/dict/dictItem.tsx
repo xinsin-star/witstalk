@@ -34,7 +34,7 @@ interface DictItemProps {
     onClose: () => void;
 }
 
-export default function DictItem({ dictTypeId, dictType, onClose }: DictItemProps) {
+export default function DictItem({ dictTypeId, dictType }: DictItemProps) {
     const [form] = Form.useForm();
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [drawerTitle, setDrawerTitle] = useState('新增字典项');
@@ -92,7 +92,7 @@ export default function DictItem({ dictTypeId, dictType, onClose }: DictItemProp
             fixed: 'end',
             width: 150,
             align: 'center',
-            render: (_: any, record: any) => (
+            render: (_: unknown, record: any) => (
                 <Space size="middle">
                     <Button type="link" icon={<EyeOutlined />} onClick={() => handleView(record)} />
                     <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
@@ -166,7 +166,7 @@ export default function DictItem({ dictTypeId, dictType, onClose }: DictItemProp
                     });
                     showMessage.success('删除成功');
                     mutate();
-                } catch (error) {
+                } catch {
                     showMessage.error('删除失败');
                 }
             }
@@ -203,7 +203,7 @@ export default function DictItem({ dictTypeId, dictType, onClose }: DictItemProp
             }
             setDrawerVisible(false);
             mutate();
-        } catch (error) {
+        } catch {
             showMessage.error('操作失败');
         }
     };

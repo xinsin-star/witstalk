@@ -288,7 +288,7 @@ export default function SelectUser({
   return (
     <Select
       value={getSelectValue()}
-      onChange={(val) => {
+      onChange={() => {
         // 内部Select组件的onChange事件，这里我们主要依赖自定义的handleUserSelect处理
         // 但仍然需要监听这个事件，以确保受控组件的正确性
       }}
