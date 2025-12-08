@@ -25,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # 必须拉取完整历史，才能获取commit信息
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -63,7 +63,39 @@ jobs:
             echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           fi
 
-      # 核心修复：简化匹配规则 + 全量日志调试
+      # 新增步骤：获取当前Commit信息
+      - name: Get current commit info
+        id: commit-info
+        run: |
+          # 获取完整commit hash
+          FULL_COMMIT_HASH=$(git rev-parse HEAD)
+          # 获取短commit hash（前7位）
+          SHORT_COMMIT_HASH=$(git rev-parse --short HEAD)
+          # 获取提交作者
+          COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an <%ae>')
+          # 获取提交信息（标题）
+          COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')
+          # 获取提交详情（可选）
+          COMMIT_BODY=$(git log -1 --pretty=format:'%b' | head -n 10)  # 只取前10行，避免过长
+          # 获取提交时间
+          COMMIT_DATE=$(git log -1 --pretty=format:'%cd' --date=format:'%Y-%m-%d %H:%M:%S')
+          
+          # 输出到环境变量，供后续步骤使用
+          echo "FULL_COMMIT_HASH=$FULL_COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_OUTPUT
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_OUTPUT
+          echo "COMMIT_BODY=$COMMIT_BODY" >> $GITHUB_OUTPUT
+          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_OUTPUT
+          
+          # 打印调试信息
+          echo "=== 当前Commit信息 ==="
+          echo "完整Hash: $FULL_COMMIT_HASH"
+          echo "短Hash: $SHORT_COMMIT_HASH"
+          echo "作者: $COMMIT_AUTHOR"
+          echo "提交信息: $COMMIT_MESSAGE"
+          echo "提交时间: $COMMIT_DATE"
+
       - name: Prepare release artifacts
         run: |
           # 创建统一输出目录
@@ -139,10 +171,21 @@ jobs:
         with:
           tag_name: v${{ steps.generate-version.outputs.VERSION }}
           name: Release v${{ steps.generate-version.outputs.VERSION }}
+          # 核心修改：整合Commit信息到发布说明
           body: |
-            ## 发布产物说明
-            - 后端可执行 JAR 文件：包含 auth、system、gateway、witstalk、game、file 模块
-            - 前端构建包（ZIP）：解压后部署到 Web 服务器（如 Nginx）
+            ## 发布信息
+            - 版本号：v${{ steps.generate-version.outputs.VERSION }}
+            - 构建Commit：[${{ steps.commit-info.outputs.SHORT_COMMIT_HASH }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ steps.commit-info.outputs.FULL_COMMIT_HASH }})
+            - 提交作者：${{ steps.commit-info.outputs.COMMIT_AUTHOR }}
+            - 提交时间：${{ steps.commit-info.outputs.COMMIT_DATE }}
+            
+            ## 提交说明
+            > ${{ steps.commit-info.outputs.COMMIT_MESSAGE }}
+            ${{ steps.commit-info.outputs.COMMIT_BODY }}
+            
+            ## 产物说明
+            - 后端可执行 JAR：包含 auth、system、gateway、witstalk、game、file 模块（可直接启动）
+            - 前端构建包：frontend-build-${{ steps.generate-version.outputs.VERSION }}.zip（解压后部署至 Nginx 等 Web 服务器）
           files: |
             release-artifacts/*.jar
             release-artifacts/*.zip
