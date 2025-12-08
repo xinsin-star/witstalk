@@ -63,31 +63,68 @@ jobs:
             echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           fi
 
-      # 核心修改：仅筛选指定模块的可启动 JAR
+      # 核心修复：简化匹配规则 + 全量日志调试
       - name: Prepare release artifacts
         run: |
           # 创建统一输出目录
           mkdir -p release-artifacts
           
-          # 1. 筛选并复制指定模块的可启动 JAR（auth/system/gateway/witstalk/game/file）
-          echo "=== 筛选指定模块的可启动 JAR 文件 ==="
-          # 定义需要保留的模块名（用 | 分隔，支持正则匹配）
-          TARGET_MODULES="auth|system|gateway|witstalk|game|file"
-          # 查找包含目标模块名的可启动 JAR（排除 -plain.jar）
-          find . -name "*.jar" -path "*/build/libs/*" ! -name "*-plain.jar" | grep -E "/($TARGET_MODULES)-" | tee found-jars.txt
-          # 复制找到的 JAR 到输出目录
-          cat found-jars.txt | xargs -I {} cp {} release-artifacts/
-          # 验证复制结果
-          echo "=== 复制后的目标 JAR 列表 ==="
-          ls -la release-artifacts/
+          # ========== 第一步：全量排查所有 JAR 文件（关键调试） ==========
+          echo "=== 【调试】项目中所有的 JAR 文件（含路径）==="
+          find . -name "*.jar" | sort
+          echo "=== 【调试】build/libs 目录下的所有 JAR 文件 ==="
+          find . -path "*/build/libs/*" -name "*.jar" | sort
           
-          # 2. 前端文件打包成单独的 ZIP（包含版本号）
-          echo "=== 打包前端文件 ==="
-          cd ./witstalk-web/dist
-          zip -r ../../release-artifacts/frontend-build-${{ steps.generate-version.outputs.VERSION }}.zip ./*
-          cd -
-          echo "=== 最终发布产物列表 ==="
-          ls -la release-artifacts/
+          # ========== 第二步：宽松匹配指定模块的可启动 JAR ==========
+          echo -e "\n=== 筛选指定模块的可启动 JAR 文件 ==="
+          # 定义需要保留的模块名（宽松匹配：文件名包含任意一个模块名即可）
+          TARGET_MODULES="auth system gateway witstalk game file"
+          # 先找到所有非 plain 的 JAR
+          ALL_JARS=$(find . -path "*/build/libs/*" -name "*.jar" ! -name "*-plain.jar")
+          echo "=== 所有可启动的 JAR 列表 ==="
+          echo "$ALL_JARS"
+          
+          # 遍历目标模块，宽松匹配（文件名包含模块名即保留）
+          for MODULE in $TARGET_MODULES; do
+            echo -e "\n=== 匹配模块: $MODULE ==="
+            MATCHED_JARS=$(echo "$ALL_JARS" | grep -i "$MODULE")  # -i 忽略大小写
+            if [ -n "$MATCHED_JARS" ]; then
+              echo "找到该模块的 JAR："
+              echo "$MATCHED_JARS"
+              # 复制到输出目录
+              echo "$MATCHED_JARS" | xargs -I {} cp {} release-artifacts/
+            else
+              echo "⚠️ 未找到 $MODULE 模块的可启动 JAR"
+            fi
+          done
+          
+          # ========== 第三步：验证后端 JAR 复制结果 ==========
+          echo -e "\n=== 复制到 release-artifacts 的后端 JAR 列表 ==="
+          ls -la release-artifacts/*.jar || echo "❌ 未复制到任何后端 JAR 文件"
+          
+          # ========== 第四步：前端文件打包 ==========
+          echo -e "\n=== 打包前端文件 ==="
+          # 先检查前端构建目录是否存在
+          if [ -d "./witstalk-web/dist" ]; then
+            cd ./witstalk-web/dist
+            zip -r ../../release-artifacts/frontend-build-${{ steps.generate-version.outputs.VERSION }}.zip ./*
+            cd -
+            echo "✅ 前端文件打包完成"
+          else
+            echo "⚠️ 前端构建目录 ./witstalk-web/dist 不存在"
+            # 检查是否是 build 目录（部分前端项目输出到 build）
+            if [ -d "./witstalk-web/build" ]; then
+              echo "🔍 发现前端构建目录为 ./witstalk-web/build，尝试打包"
+              cd ./witstalk-web/build
+              zip -r ../../release-artifacts/frontend-build-${{ steps.generate-version.outputs.VERSION }}.zip ./*
+              cd -
+              echo "✅ 前端文件（build 目录）打包完成"
+            fi
+          fi
+          
+          # ========== 第五步：最终产物验证 ==========
+          echo -e "\n=== 最终发布产物列表 ==="
+          ls -la release-artifacts/ || echo "❌ release-artifacts 目录为空"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -104,11 +141,11 @@ jobs:
           name: Release v${{ steps.generate-version.outputs.VERSION }}
           body: |
             ## 发布产物说明
-            - 后端可执行 JAR 文件：仅包含 auth、system、gateway、witstalk、game、file 模块
+            - 后端可执行 JAR 文件：包含 auth、system、gateway、witstalk、game、file 模块
             - 前端构建包（ZIP）：解压后部署到 Web 服务器（如 Nginx）
           files: |
-            release-artifacts/*.jar  # 仅指定模块的可启动 JAR
-            release-artifacts/*.zip  # 前端单独的压缩包
+            release-artifacts/*.jar
+            release-artifacts/*.zip
           draft: false
           prerelease: false
         env:
