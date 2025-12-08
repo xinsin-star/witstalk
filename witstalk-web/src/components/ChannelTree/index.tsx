@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { request, requestSWR } from "~/util/request.ts";
 import { ConfigProvider, Form, Input, Tree, Avatar, Modal, Tooltip } from "antd";
 import { PlusSquareOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -7,16 +7,18 @@ import { showMessage } from "~/util/msg.tsx";
 import type { NamePath } from "antd/es/form/interface";
 import defaultAvatar from '~/assets/images/defaultAvatar.svg';
 
+const { Search } = Input;
+
 interface Channel {
-    id: number;
-    parentId: number;
-    channelName: string;
-    channelCode: string;
-    channelDesc: string;
-    channelTip: string;
-    channelImg: string;
-    sort: number;
-    isTop: boolean;
+    id: number; // 频道ID
+    parentId: number; // 父频道ID
+    channelName: string; // 频道名称 必选字段
+    channelCode: string; // 频道编码 必选字段
+    channelDesc: string; // 频道描述 可选字段
+    channelTip: string; // 频道提示 可选字段
+    channelImg: string; // 频道图片 可选字段 图片URL
+    sort: number; // 排序字段 可选字段 数值越小越靠前
+    isTop: boolean; // 是否置顶 可选字段 默认为false 需手动改为true才能置顶
     children?: Channel[];
 }
 
@@ -26,7 +28,13 @@ const url: Record<string, string> = {
     delete: '/system/sysChannel/remove'
 };
 
-export default function ChannelTree() {
+interface ChannelTreeProps {
+    onSelect?: (channel: Channel) => void;
+    isEdit?: boolean;
+}
+
+export default function ChannelTree(props: ChannelTreeProps) {
+    const { onSelect, isEdit = false } = props;
     const [dataSource, setDataSource] = useState<Channel[]>([]);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [form] = Form.useForm();
@@ -42,7 +50,7 @@ export default function ChannelTree() {
     // 收集所有节点ID用于默认展开
     const collectAllKeys = (channels: Channel[]): React.Key[] => {
         const keys: React.Key[] = [];
-        
+
         const traverse = (nodes: Channel[]) => {
             nodes.forEach(node => {
                 keys.push(node.id);
@@ -51,7 +59,7 @@ export default function ChannelTree() {
                 }
             });
         };
-        
+
         traverse(channels);
         return keys;
     };
@@ -78,7 +86,7 @@ export default function ChannelTree() {
     // 收集当前节点及其所有子节点的ID
     const collectAllNodeIds = (nodeId: number): number[] => {
         const allIds: number[] = [nodeId];
-        
+
         const findChildren = (channels: Channel[], parentId: number) => {
             channels.forEach(channel => {
                 if (channel.parentId === parentId) {
@@ -89,7 +97,7 @@ export default function ChannelTree() {
                 }
             });
         };
-        
+
         findChildren(dataSource, nodeId);
         return allIds;
     };
@@ -98,7 +106,7 @@ export default function ChannelTree() {
     const handleDelete = (id: number) => {
         // 收集所有要删除的节点ID
         const allNodeIds = collectAllNodeIds(id);
-        
+
         Modal.confirm({
                 title: '确认删除',
                 content: `确定要删除该频道及其所有子频道吗？共 ${allNodeIds.length} 个频道将被删除。`,
@@ -141,8 +149,8 @@ export default function ChannelTree() {
                     alt={nodeData.channelName}
                 />
                 <Tooltip title={nodeData.channelName} placement="top">
-                    <span 
-                        style={{ 
+                    <span
+                        style={{
                             color: "var(--cream-primary)",
                             flex: 1,
                             overflow: "hidden",
@@ -155,16 +163,20 @@ export default function ChannelTree() {
                         {nodeData.channelName}
                     </span>
                 </Tooltip>
-                <PlusSquareOutlined 
-                    onClick={() => handleAdd(nodeData.id)} 
+                { isEdit &&
+                <PlusSquareOutlined
+                    onClick={() => handleAdd(nodeData.id)}
                     style={{ color: "var(--cream-primary)", cursor: 'pointer' }}
                     title="新增子频道"
                 />
-                <DeleteOutlined 
-                    onClick={() => handleDelete(nodeData.id)} 
+                }
+                { isEdit &&
+                <DeleteOutlined
+                    onClick={() => handleDelete(nodeData.id)}
                     style={{ color: "var(--cream-primary)", cursor: 'pointer' }}
                     title="删除频道"
                 />
+                }
             </div>
         );
     };
@@ -191,6 +203,12 @@ export default function ChannelTree() {
         }
     };
 
+    const treeSelect = (_selectedKeys: any, e: { selected: boolean, selectedNodes: any[], node: any, event: any }) => {
+        if (onSelect && e.selectedNodes.length > 0) {
+            onSelect(e.selectedNodes[0] as Channel)
+        }
+    }
+
     return (
         <ConfigProvider
             theme={{
@@ -200,7 +218,9 @@ export default function ChannelTree() {
             }}
         >
             <div style={{ height: "84vh", width: "20vw", margin: "10px", overflow: "auto" }}>
+                <Search style={{ marginBottom: 8 }} placeholder="Search" />
                 <Tree
+                    onSelect={treeSelect}
                     treeData={dataSource as any}
                     expandedKeys={expandedKeys}
                     onExpand={newExpandedKeys => setExpandedKeys(newExpandedKeys)}
@@ -213,7 +233,7 @@ export default function ChannelTree() {
 
                 <WtDrawer
                     onClose={() => setDrawerVisible(false)}
-                    open={drawerVisible} 
+                    open={drawerVisible}
                     title="新增频道"
                     onOk={form.submit}
                     okButtonProps={{ className: 'cream-button' }}

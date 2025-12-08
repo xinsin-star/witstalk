@@ -58,6 +58,7 @@ public class SysDictTypeController {
      */
     @PostMapping("/update")
     public Result<Boolean> update(@RequestBody SysDictType sysDictType) {
+        sysDictTypeService.refreshCache();
         return Result.success(sysDictTypeService.updateById(sysDictType));
     }
 
@@ -68,6 +69,7 @@ public class SysDictTypeController {
      */
     @PostMapping("/delete")
     public Result<Boolean> delete(@RequestParam("id") Long id) {
+        sysDictTypeService.refreshCache();
         return Result.success(sysDictTypeService.removeById(id));
     }
 

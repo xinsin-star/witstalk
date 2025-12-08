@@ -38,6 +38,7 @@ public class SysDictTypeItemController {
      */
     @PostMapping("/add")
     public Result<Boolean> add(@RequestBody SysDictTypeItem sysDictTypeItem) {
+        sysDictTypeService.refreshCache();
         return Result.success(sysDictTypeItemService.save(sysDictTypeItem));
     }
 
@@ -48,6 +49,7 @@ public class SysDictTypeItemController {
      */
     @PostMapping("/update")
     public Result<Boolean> update(@RequestBody SysDictTypeItem sysDictTypeItem) {
+        sysDictTypeService.refreshCache();
         return Result.success(sysDictTypeItemService.updateById(sysDictTypeItem));
     }
 
@@ -58,6 +60,7 @@ public class SysDictTypeItemController {
      */
     @PostMapping("/delete")
     public Result<Boolean> delete(@RequestParam("id") Long id) {
+        sysDictTypeService.refreshCache();
         return Result.success(sysDictTypeItemService.removeById(id));
     }
 
