@@ -14,6 +14,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public PageResult<SysRole> customPage(SysRole sysRole, Page<SysRole> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysRole);
         Page<SysRole> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords());
     }
 }

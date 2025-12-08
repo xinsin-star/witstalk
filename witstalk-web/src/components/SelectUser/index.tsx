@@ -62,9 +62,10 @@ interface User {
   userId?: number;
 }
 
+// Update interface to use more flexible types
 interface SelectUserProps {
-  value?: number | number[] | User | User[];
-  onChange?: (value: User[]) => void;
+  value?: any;
+  onChange?: (value: any) => void;
   placeholder?: string;
   mode?: 'single' | 'multiple';
   style?: React.CSSProperties;

@@ -3,10 +3,10 @@ import logo from '~/assets/images/defaultAvatar.svg';
 import { useNavigate } from 'react-router';
 import './system.css';
 import bgc from '~/assets/images/bgc.jpg';
-import type {MasonryItemType} from "antd/es/masonry/MasonryItem";
+
 
 interface SystemItem {
-    img: object;
+    img: string;
     title: string;
     url: string;
 }
@@ -42,8 +42,10 @@ export default function System() {
         }
     ]
 
-    const items: MasonryItemType[] = systemItems.map((item, index) => ({
+    // Update items to include required data property for MasonryItemType
+    const items = systemItems.map((item, index) => ({
         key: index.toString(),
+        data: item, // Add required data property
         children: (
             <Card
                 className="system-card card-background"

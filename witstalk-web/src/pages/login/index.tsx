@@ -11,7 +11,7 @@ const { Item } = Form;
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const [form] = Form.useForm<{username: string; password: string}>();
+  const [form] = Form.useForm<{username: string; password: string; remember: boolean}>();
   const [isLoading, setIsLoading] = useState(false);
   const { updateUserInfo } = useUserStore();
 

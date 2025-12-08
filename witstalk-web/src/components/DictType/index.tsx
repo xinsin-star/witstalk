@@ -37,21 +37,16 @@ export default function DictType({
     });
 
     // 处理选择变化
-    const handleChange = (value: any) => {
-        if (onChange) {
-            onChange(value);
-        }
-    };
-
-    // 处理选择前的验证
-    const handleBeforeSelect = (value: any) => {
+    const handleChange = (newValue: any) => {
         if (mode === 'multiple' && maxSelectCount > 0) {
-            const currentValue = Array.isArray(value) ? value : [];
-            if (currentValue.length >= maxSelectCount) {
-                return false;
+            const newValueArray = Array.isArray(newValue) ? newValue : [];
+            if (newValueArray.length > maxSelectCount) {
+                return; // 超过最大选择数量，不触发 onChange
             }
         }
-        return true;
+        if (onChange) {
+            onChange(newValue);
+        }
     };
 
     return (
@@ -63,7 +58,6 @@ export default function DictType({
             maxTagCount={maxTagCount}
             disabled={disabled}
             className={className}
-            beforeSelect={handleBeforeSelect}
             loading={!data && !error}
         >
             {data?.map((item: any) => (

@@ -25,7 +25,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public PageResult<SysUser> customPage(SysUser sysUser, Page<SysUser> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysUser);
         Page<SysUser> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords().stream().peek(item -> item.setPassword(null)).toList());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords().stream().peek(item -> item.setPassword(null)).toList());
     }
 
     public SysUserAndAuthVO getUserInfoByUsername(String username) {

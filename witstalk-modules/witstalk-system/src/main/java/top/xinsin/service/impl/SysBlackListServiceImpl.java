@@ -14,6 +14,6 @@ public class SysBlackListServiceImpl extends ServiceImpl<SysBlackListMapper, Sys
     public PageResult<SysBlackList> customPage(SysBlackList sysBlackList, Page<SysBlackList> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysBlackList);
         Page<SysBlackList> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords());
     }
 }

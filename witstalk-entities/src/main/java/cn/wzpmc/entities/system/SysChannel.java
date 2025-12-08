@@ -1,5 +1,6 @@
 package cn.wzpmc.entities.system;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,6 +8,11 @@ import top.xinsin.entity.BaseEntity;
 import top.xinsin.listener.MyInsertListener;
 import top.xinsin.listener.MyUpdateListener;
 
+import java.util.List;
+
+/**
+ * 频道实体类
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Table(value = "sys_channel", onInsert = MyInsertListener.class, onUpdate = MyUpdateListener.class)
@@ -75,4 +81,7 @@ public class SysChannel extends BaseEntity {
      * 是否置顶
      */
     private Boolean isTop;
+
+    @Column(ignore = true)
+    private List<SysChannel> children;
 }

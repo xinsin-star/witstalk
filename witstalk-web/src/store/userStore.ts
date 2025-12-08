@@ -104,7 +104,8 @@ export const useUserStore = create(
           sessionStorage.removeItem(name);
         }
       },
-      partialize: (state: UserStore): Pick<UserStore, 'userInfo' | 'permissions' | 'roles'> => ({ userInfo: state.userInfo, permissions: state.permissions, roles: state.roles }),
+      // Remove explicit return type to let TypeScript infer it correctly
+
     }
   )
 );

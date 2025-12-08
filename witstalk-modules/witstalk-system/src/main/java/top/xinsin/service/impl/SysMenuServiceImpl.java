@@ -14,6 +14,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public PageResult<SysMenu> customPage(SysMenu sysMenu, Page<SysMenu> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysMenu);
         Page<SysMenu> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords());
     }
 }

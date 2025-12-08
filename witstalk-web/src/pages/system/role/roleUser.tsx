@@ -77,9 +77,18 @@ const RoleUser: React.FC<RoleUserBindingProps> = ({
         }
     }, [visible, roleId]);
 
-    // 处理用户选择
-    const handleUserSelect = (users: User[]) => {
-        setSelectedUsers(users);
+    // 处理用户选择 - 适配SelectUser组件返回的User类型
+    const handleUserSelect = (users: any[]) => {
+        // Convert SelectUser's User type to our local User type
+        const convertedUsers = users.map(user => ({
+            id: user.id || user.userId || 0,
+            userName: user.username || user.userName || '',
+            nickName: user.nickName || '',
+            email: user.email || '',
+            createBy: user.createBy || '',
+            createTime: user.createTime || ''
+        }));
+        setSelectedUsers(convertedUsers);
     };
 
     // 处理删除用户
@@ -135,7 +144,7 @@ const RoleUser: React.FC<RoleUserBindingProps> = ({
     };
 
     // 表格列配置
-    const columns: ColumnsType = [
+    const columns: ColumnsType<User> = [
         {
             title: '用户名',
             dataIndex: 'username',

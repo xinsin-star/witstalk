@@ -21,7 +21,7 @@ public class SysRoleUserServiceImpl extends ServiceImpl<SysRoleUserMapper, SysRo
     public PageResult<SysRoleUser> customPage(SysRoleUser sysRoleUser, Page<SysRoleUser> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysRoleUser);
         Page<SysRoleUser> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords());
     }
 
     public Boolean customSave(SysRoleUser sysRoleUser) {

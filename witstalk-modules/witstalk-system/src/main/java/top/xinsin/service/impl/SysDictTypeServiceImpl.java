@@ -32,7 +32,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     public PageResult<SysDictType> customPage(SysDictType sysDictType, Page<SysDictType> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysDictType);
         Page<SysDictType> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords());
     }
 
     public List<SysDictTypeItem> listByDictType(String dictType) {

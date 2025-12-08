@@ -16,7 +16,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
     public PageResult<SysRoleMenu> customPage(SysRoleMenu sysRoleMenu, Page<SysRoleMenu> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysRoleMenu);
         Page<SysRoleMenu> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords());
     }
 
     public boolean customSave(SysRoleMenu sysRoleMenu) {

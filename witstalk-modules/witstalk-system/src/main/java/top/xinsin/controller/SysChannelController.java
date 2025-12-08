@@ -1,5 +1,6 @@
 package top.xinsin.controller;
 
+import cn.wzpmc.entities.system.vo.SysChannelTreeVO;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import top.xinsin.service.impl.SysChannelServiceImpl;
 import top.xinsin.util.PageResult;
 import top.xinsin.util.Result;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -40,9 +42,12 @@ public class SysChannelController {
     @PostMapping("/add")
     public Result<Boolean> add(@RequestBody SysChannel sysChannel) {
         QueryWrapper eq = QueryWrapper.create()
-                .eq(SysChannel::getChannelCode, sysChannel.getChannelCode());
+                .eq(SysChannel::getIsVisible, true)
+                .eq(SysChannel::getChannelCode, sysChannel.getChannelCode(), true);
         List<SysChannel> list = sysChannelService.list(eq);
         if (list.isEmpty()) {
+            sysChannel.setIsVisible(false);
+            sysChannel.setSort(0L);
             return Result.success(sysChannelService.save(sysChannel));
         } else {
             return Result.success(false);
@@ -77,5 +82,21 @@ public class SysChannelController {
     @PostMapping("/detail")
     public Result<SysChannel> detail(@RequestParam("id") Long id) {
         return Result.success(sysChannelService.getById(id));
+    }
+
+    @PostMapping("/treeList")
+    public Result<List<SysChannelTreeVO>> treeList(@RequestBody SysChannel sysChannel) {
+        return Result.success(sysChannelService.getTreeList(sysChannel));
+    }
+
+    /**
+     * 删除多个
+     * @param ids 字典类型IDs
+     * @return 操作结果
+     */
+    @PostMapping("/remove")
+    public Result<Boolean> remove(@RequestParam("ids") String ids) {
+        String[] split = ids.split(",");
+        return Result.success(sysChannelService.removeByIds(Arrays.asList(split)));
     }
 }

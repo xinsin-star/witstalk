@@ -57,7 +57,6 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
     const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
     const [halfCheckedKeys, setHalfCheckedKeys] = useState<string[]>([]);
     const [menuTreeData, setMenuTreeData] = useState<MenuNode[]>([]);
-    const [menuLoading, setMenuLoading] = useState(false);
     const [saveLoading, setSaveLoading] = useState(false);
     const [treeLoading, setTreeLoading] = useState(false);
 
@@ -132,7 +131,7 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
     // 获取角色已绑定的菜单
     const getRoleMenus = async () => {
         try {
-            setMenuLoading(true);
+            setTreeLoading(true);
             const response = await request({
                 url: url.roleMenuList,
                 method: 'POST',
@@ -148,7 +147,7 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
         } catch {
             showMessage.error('获取角色菜单失败');
         } finally {
-            setMenuLoading(false);
+            setTreeLoading(false);
         }
     };
 
@@ -164,7 +163,11 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
     }, [visible, roleId]);
 
     // 处理菜单选择变化
-    const handleMenuSelect = (checkedKeysValue: string[], halfCheckedKeysValue: string[]) => {
+    const handleMenuSelect = (checked: any, info: any) => {
+        // Extract checked and halfChecked keys from the checked parameter
+        const checkedKeysValue = Array.isArray(checked) ? checked : (checked.checked || []);
+        const halfCheckedKeysValue = Array.isArray(checked) ? info.halfCheckedKeys : (checked.halfChecked || []);
+        
         setCheckedKeys(checkedKeysValue);
         setHalfCheckedKeys(halfCheckedKeysValue);
     };
@@ -208,10 +211,8 @@ const RoleMenu: React.FC<RoleMenuBindingProps> = ({
                     <Tree
                         checkable
                         treeData={menuTreeData}
-                        checkedKeys={checkedKeys}
-                        halfCheckedKeys={halfCheckedKeys}
+                        checkedKeys={{ checked: checkedKeys, halfChecked: halfCheckedKeys }}
                         onCheck={handleMenuSelect}
-                        loading={menuLoading}
                         checkStrictly={false}
                         defaultExpandAll
                     />

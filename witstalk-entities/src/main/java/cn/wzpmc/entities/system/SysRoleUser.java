@@ -10,11 +10,20 @@ import top.xinsin.listener.MyUpdateListener;
 
 import java.util.List;
 
+/**
+ * 角色用户实体类
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Table(value = "sys_role_user", onInsert = MyInsertListener.class, onUpdate = MyUpdateListener.class)
 public class SysRoleUser extends BaseEntity {
+    /**
+     * 角色ID
+     */
     private Long roleId;
+    /**
+     * 用户ID
+     */
     private Long userId;
 
     @Column(ignore = true)

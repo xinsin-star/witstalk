@@ -14,6 +14,6 @@ public class SysDictTypeItemServiceImpl extends ServiceImpl<SysDictTypeItemMappe
     public PageResult<SysDictTypeItem> customPage(SysDictTypeItem sysDictTypeItem, Page<SysDictTypeItem> page) {
         QueryWrapper queryWrapper = QueryWrapper.create(sysDictTypeItem);
         Page<SysDictTypeItem> page1 = this.page(page, queryWrapper);
-        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalPage(), page1.getRecords());
+        return PageResult.page(page1.getPageNumber(), page1.getPageSize(), page1.getTotalRow(), page1.getRecords());
     }
 }
