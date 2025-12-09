@@ -42,6 +42,7 @@ export default function ChannelTree(props: ChannelTreeProps) {
     const [form] = Form.useForm();
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
+    const [searchText, setSearchText] = useState<string>('');
 
     const { data, mutate } = useRequest({
         url: isEdit ? url.list : url.treeListByUser,
@@ -64,6 +65,59 @@ export default function ChannelTree(props: ChannelTreeProps) {
 
         traverse(channels);
         return keys;
+    };
+
+    // 搜索处理函数
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
+
+    // 根据channelName过滤树节点
+    const filterTreeByChannelName = (channels: Channel[], search: string): Channel[] => {
+        if (!search.trim()) {
+            return channels;
+        }
+
+        const lowerSearch = search.toLowerCase();
+
+        // 递归过滤函数
+        const filter = (node: Channel): Channel | null => {
+            // 检查当前节点是否匹配搜索条件
+            const isMatch = node.channelName.toLowerCase().includes(lowerSearch);
+            
+            // 过滤子节点
+            const filteredChildren: Channel[] = [];
+            if (node.children && node.children.length > 0) {
+                node.children.forEach(child => {
+                    const filteredChild = filter(child);
+                    if (filteredChild) {
+                        filteredChildren.push(filteredChild);
+                    }
+                });
+            }
+            
+            // 如果当前节点匹配或者有匹配的子节点，则返回该节点
+            if (isMatch || filteredChildren.length > 0) {
+                return {
+                    ...node,
+                    children: filteredChildren
+                };
+            }
+            
+            // 否则返回null，表示该节点不匹配
+            return null;
+        };
+
+        // 过滤根节点
+        const result: Channel[] = [];
+        channels.forEach(node => {
+            const filteredNode = filter(node);
+            if (filteredNode) {
+                result.push(filteredNode);
+            }
+        });
+
+        return result;
     };
 
     useEffect(() => {
@@ -220,10 +274,15 @@ export default function ChannelTree(props: ChannelTreeProps) {
             }}
         >
             <div style={{ height: "84vh", width: "20vw", margin: "10px", overflow: "auto" }}>
-                <Search style={{ marginBottom: 8 }} placeholder="Search" />
+                <Search 
+                    style={{ marginBottom: 8 }} 
+                    placeholder="Search"
+                    onChange={handleSearch}
+                    value={searchText}
+                />
                 <Tree
                     onSelect={treeSelect}
-                    treeData={dataSource as any}
+                    treeData={filterTreeByChannelName(dataSource, searchText) as any}
                     expandedKeys={expandedKeys}
                     onExpand={newExpandedKeys => setExpandedKeys(newExpandedKeys)}
                     autoExpandParent={true}
