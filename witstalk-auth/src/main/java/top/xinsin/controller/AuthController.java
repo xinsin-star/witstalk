@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import top.xinsin.constants.CacheConstants;
 import top.xinsin.domain.AuthUserRequest;
+import top.xinsin.domain.Password;
 import top.xinsin.service.SysUserDetailsService;
 import top.xinsin.util.JwtUtil;
 import top.xinsin.util.Result;
@@ -53,5 +54,9 @@ public class AuthController {
     public Result<SysUserAndAuthVO> userInfo() {
         SysUserAndAuthVO sysUser = sysUserDetailsService.userInfo();
         return Result.success(sysUser);
+    }
+    @PostMapping("/updatePassword")
+    public Result<Boolean> updatePassword(@RequestBody Password password) {
+        return Result.success(sysUserDetailsService.updatePassword(password));
     }
 }

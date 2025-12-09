@@ -41,7 +41,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login",
                                 "/register",
-                                "/userInfo"
+                                "/userInfo",
+                                "/updatePassword"
                         )
                         .permitAll()
                         .anyRequest().authenticated()

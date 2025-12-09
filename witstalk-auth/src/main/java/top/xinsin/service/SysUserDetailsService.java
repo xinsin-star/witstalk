@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import top.xinsin.api.system.RemoteUserService;
+import top.xinsin.domain.Password;
 import top.xinsin.util.Result;
 import top.xinsin.util.SecurityUtil;
 
@@ -53,5 +54,18 @@ public class SysUserDetailsService {
         SysUserAndAuthVO data = remoteUserService.getUserInfo(Objects.requireNonNull(SecurityUtil.getLoginUser()).getUsername()).data();
         data.setPassword(null);
         return data;
+    }
+
+    public Boolean updatePassword(Password password) {
+        SysUserAndAuthVO data = remoteUserService.getUserInfo(Objects.requireNonNull(SecurityUtil.getLoginUser()).getUsername()).data();
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if (bCryptPasswordEncoder.encode(data.getPassword()).equals(bCryptPasswordEncoder.encode(password.getOldPassword()))) {
+            SysUser sysUser = new SysUser();
+            sysUser.setId(Objects.requireNonNull(SecurityUtil.getLoginUser()).getUserId());
+            sysUser.setPassword(bCryptPasswordEncoder.encode(password.getNewPassword()));
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -24,6 +24,12 @@ public class RemoteUserFallbackFactory implements FallbackFactory<RemoteUserServ
                 log.error("RemoteUserService register fallback: {}", cause.getMessage());
                 return Result.fail("RemoteUserService register fallback: " + cause.getMessage());
             }
+
+            @Override
+            public Result<Boolean> update(SysUser sysUser) {
+                log.error("RemoteUserService update fallback: {}", cause.getMessage());
+                return Result.fail("RemoteUserService update fallback: " + cause.getMessage());
+            }
         };
     }
 }

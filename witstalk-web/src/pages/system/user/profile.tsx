@@ -14,12 +14,13 @@ import { UserOutlined, CameraOutlined, LockOutlined, MailOutlined } from '@ant-d
 import { useUserStore } from '~/store/userStore';
 import { request } from '~/util/request';
 import { showMessage } from '~/util/msg';
+import { useNavigate } from 'react-router';
 
 const { Password } = Input;
 
 const url = {
   updateAvatar: '/auth/updateAvatar',
-  updateProfile: '/auth/updateProfile',
+  updateProfile: '/system/sysUser/update',
   updatePassword: '/auth/updatePassword',
 };
 
@@ -27,8 +28,9 @@ export default function Profile() {
   const [basicForm] = Form.useForm();
   const [passwordForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const { userInfo, updateUserInfo } = useUserStore();
+  const { userInfo, updateUserInfo, restartUserInfo } = useUserStore();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const navigate = useNavigate();
 
   // 初始化表单数据
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function Profile() {
       basicForm.setFieldsValue({
         nickName: userInfo.nickName,
         email: userInfo.email,
+        id: userInfo.id,
       });
     }
   }, [userInfo, basicForm]);
@@ -119,20 +122,22 @@ export default function Profile() {
   // 保存密码
   const handleSavePassword = async (values: any) => {
     setLoading(true);
-    try {
-      await request({
-        url: url.updatePassword,
-        method: 'POST',
-        data: values,
-      });
-
+    const data = await request({
+      url: url.updatePassword,
+      method: 'POST',
+      data: values,
+    });
+    if (data.data === 200) {
       showMessage.success('密码更新成功!');
       passwordForm.resetFields();
-    } catch {
+      restartUserInfo()
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+      navigate('/login');
+    } else {
       showMessage.error('密码更新失败!');
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
@@ -209,6 +214,7 @@ export default function Profile() {
             initialValues={{
               nickName: userInfo.nickName,
               email: userInfo.email,
+              id: userInfo.userId,
             }}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -230,6 +236,10 @@ export default function Profile() {
               >
                 <Input prefix={<MailOutlined />} placeholder="请输入邮箱" className="cream-input" />
               </Form.Item>
+              <Form.Item
+                name="id"
+                hidden
+              />
             </div>
 
             <Form.Item>
