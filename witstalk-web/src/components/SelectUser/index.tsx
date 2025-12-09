@@ -11,7 +11,7 @@ import {
   Space
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { requestSWR } from '~/util/request';
+import {useRequest} from "~/hook/useRequest.ts";
 
 /*
 <Form.Item
@@ -118,7 +118,7 @@ export default function SelectUser({
   }, [value]);
 
   // 获取用户列表数据
-  const { data, error, mutate } = requestSWR({
+  const { data, error, mutate } = useRequest({
     url: url.list,
     method: 'POST',
     data: {

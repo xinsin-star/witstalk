@@ -17,7 +17,8 @@ import {
     EyeOutlined,
     SearchOutlined
 } from '@ant-design/icons';
-import { requestSWR, request } from '~/util/request';
+import { request } from '~/util/request';
+import {useRequest} from "~/hook/useRequest.ts";
 import { showMessage } from '~/util/msg';
 import WtDrawer from '~/components/WtDrawer';
 import WtPagination from '~/components/WtPagination';
@@ -66,7 +67,7 @@ export default function Menu() {
     const generateMenuTree = (menus: Menu[]) => {
         // 创建全新的菜单副本，避免引用共享
         const menuCopies = menus.map(menu => ({ ...menu, children: [] }));
-        
+
         // 构建菜单映射
         const menuMap = new Map<number, Menu>();
         menuCopies.forEach(menu => {
@@ -107,7 +108,7 @@ export default function Menu() {
 
         // 生成最终的树形结构
         const finalTree = [...rootMenus];
-        
+
         setMenuTree(finalTree);
         setParentMenuOptions([{ value: 0, label: '顶级菜单' }, ...generateOptions(finalTree)]);
         // 直接设置新的数据源，确保React重新渲染
@@ -115,7 +116,7 @@ export default function Menu() {
     };
 
     // 获取菜单列表数据
-    const { data, mutate } = requestSWR({
+    const { data, mutate } = useRequest({
         url: url.list,
         method: 'POST',
         data: {
@@ -196,7 +197,7 @@ export default function Menu() {
         // 收集所有要删除的节点id
         const deleteIds = collectMenuIds(record);
         const deleteCount = deleteIds.length;
-        
+
         Modal.confirm({
             title: '确认删除',
             content: `确定要删除菜单【${record.menuName}】及其${deleteCount - 1}个子菜单吗？`,

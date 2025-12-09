@@ -60,5 +60,5 @@
 [//]: # (</div>)
 
 ## 🧑‍💻How to develop?
-- 1.Use `git clone https://github.com/xin-sin/witsTalk.git` Download our project
+- 1.Use `git clone https://github.com/xinsin-star/witsTalk.git` Download our project
 

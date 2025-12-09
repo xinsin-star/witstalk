@@ -15,7 +15,8 @@ import {
     EyeOutlined,
     RedoOutlined
 } from '@ant-design/icons';
-import { requestSWR, request } from '~/util/request';
+import { request } from '~/util/request';
+import {useRequest} from "~/hook/useRequest.ts";
 import { showMessage } from '~/util/msg';
 import WtDrawer from '~/components/WtDrawer';
 import WtPagination from '~/components/WtPagination';
@@ -129,7 +130,7 @@ export default function Dict() {
     ]
 
     // 获取字典类型列表数据
-    const { data, error, mutate } = requestSWR({
+    const { data, error, mutate } = useRequest({
         url: url.list,
         method: 'POST',
         data: {

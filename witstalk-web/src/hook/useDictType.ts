@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { selectDictList } from '~/api/system/dict';
 
+export interface DictItem {
+    dictLabel: string;
+    dictValue: string | number;
+    [key: string]: any;
+}
+
 export const useDictType = (dictType: string) => {
-    const [dictList, setDictList] = useState<any[]>([]);
+    const [dictList, setDictList] = useState<DictItem[]>([]);
     const [loading, setLoading] = useState(false);
 
     const fetchDict = useCallback(
-        async (targetType) => {
+        async (targetType = dictType) => {
             // 空类型直接重置状态
             if (!targetType) {
                 setDictList([]);
@@ -15,14 +21,14 @@ export const useDictType = (dictType: string) => {
             }
             setLoading(true);
             try {
-                const response = await selectDictList(dictType);
+                const response = await selectDictList(targetType);
                 setDictList(response.data || []);
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error fetching dict list:', error);
             } finally {
                 setLoading(false);
             }
-        },[]
+        },[dictType]
     )
 
     useEffect(() => {

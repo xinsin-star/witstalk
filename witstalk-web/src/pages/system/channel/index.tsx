@@ -1,10 +1,10 @@
-import { Empty, Form, Input, InputNumber, Switch, Button, Row, Col, FloatButton } from "antd";
+import { Empty, Form, Input, InputNumber, Switch, Button, Row, Col } from "antd";
 import DictType from "~/components/DictType";
 import { useState } from "react";
 import ChannelTree from "~/components/ChannelTree";
 import { request } from "~/util/request";
 import { showMessage } from "~/util/msg";
-import { SaveOutlined } from "@ant-design/icons";
+
 import { useDictType } from "~/hook/useDictType";
 
 // Define Channel interface locally

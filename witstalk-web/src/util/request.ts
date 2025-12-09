@@ -1,5 +1,4 @@
 import requesterAxios from "~/util/requesterAxios";
-import useSWR from "swr";
 import type {AxiosRequestConfig} from "axios";
 
 /**
@@ -9,14 +8,6 @@ export interface requestParams {
     url: string,
     method: string,
     data?: any,
-}
-
-/**
- * swr请求器封装
- * @param param
- */
-export const requestSWR = (param: requestParams) => {
-    return useSWR([param.url, param], ([url, param]) => axios(url, param));
 }
 
 /**

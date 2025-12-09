@@ -1,5 +1,6 @@
 import { Select } from 'antd';
-import { requestSWR } from '~/util/request';
+import {useRequest} from "~/hook/useRequest.ts";
+import type { DictItem } from '~/hook/useDictType';
 
 const { Option } = Select;
 
@@ -9,8 +10,8 @@ const url = {
 
 interface DictTypeProps {
     dictType: string;
-    value?: any;
-    onChange?: (value: any) => void;
+    value?: string | number | (string | number)[];
+    onChange?: (value: string | number | (string | number)[]) => void;
     placeholder?: string;
     mode?: 'single' | 'multiple';
     maxTagCount?: number;
@@ -31,13 +32,13 @@ export default function DictType({
     className = ''
 }: DictTypeProps) {
     // 获取字典项数据
-    const { data, error } = requestSWR({
+    const { data, error } = useRequest({
         url: `${url.list}?dictType=${dictType}`,
         method: 'POST'
     });
 
     // 处理选择变化
-    const handleChange = (newValue: any) => {
+    const handleChange = (newValue: string | number | (string | number)[]) => {
         if (mode === 'multiple' && maxSelectCount > 0) {
             const newValueArray = Array.isArray(newValue) ? newValue : [];
             if (newValueArray.length > maxSelectCount) {
@@ -60,9 +61,9 @@ export default function DictType({
             className={className}
             loading={!data && !error}
         >
-            {data?.map((item: any) => (
+            {data?.map((item: DictItem) => (
                 <Option key={item.dictValue} value={item.dictValue}>
-                    {item.dictName}
+                    {item.dictLabel}
                 </Option>
             ))}
         </Select>

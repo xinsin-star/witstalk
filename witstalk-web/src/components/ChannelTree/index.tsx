@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { request, requestSWR } from "~/util/request.ts";
+import { request } from "~/util/request.ts";
+import {useRequest} from "~/hook/useRequest.ts";
 import { ConfigProvider, Form, Input, Tree, Avatar, Modal, Tooltip } from "antd";
 import { PlusSquareOutlined, DeleteOutlined } from "@ant-design/icons";
 import WtDrawer from "~/components/WtDrawer";
@@ -41,7 +42,7 @@ export default function ChannelTree(props: ChannelTreeProps) {
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-    const { data, mutate } = requestSWR({
+    const { data, mutate } = useRequest({
         url: url.list,
         method: 'POST',
         data: {}
