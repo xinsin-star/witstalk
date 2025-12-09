@@ -10,7 +10,7 @@ import defaultAvatar from '~/assets/images/defaultAvatar.svg';
 
 const { Search } = Input;
 
-interface Channel {
+export interface Channel {
     id: number; // 频道ID
     parentId: number; // 父频道ID
     channelName: string; // 频道名称 必选字段
@@ -25,6 +25,7 @@ interface Channel {
 
 const url: Record<string, string> = {
     list: '/system/sysChannel/treeList',
+    treeListByUser: '/system/sysChannel/treeListByUser',
     add: '/system/sysChannel/add',
     delete: '/system/sysChannel/remove'
 };
@@ -43,7 +44,7 @@ export default function ChannelTree(props: ChannelTreeProps) {
     const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     const { data, mutate } = useRequest({
-        url: url.list,
+        url: isEdit ? url.list : url.treeListByUser,
         method: 'POST',
         data: {}
     });

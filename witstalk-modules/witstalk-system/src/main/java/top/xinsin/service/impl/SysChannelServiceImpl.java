@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static cn.wzpmc.entities.system.table.SysChannelTableDef.SYS_CHANNEL;
+
 @Service
 public class SysChannelServiceImpl extends ServiceImpl<SysChannelMapper, SysChannel> implements ISysChannelService {
     public PageResult<SysChannel> customPage(SysChannel sysChannel, Page<SysChannel> page) {
@@ -83,5 +85,16 @@ public class SysChannelServiceImpl extends ServiceImpl<SysChannelMapper, SysChan
         for (SysChannel node : nodeList) {
             sortTreeChildren(node.getChildren());
         }
+    }
+
+    public List<SysChannelTreeVO> getTreeListByUser(SysChannel sysChannel) {
+        QueryWrapper queryWrapper = QueryWrapper
+                .create(sysChannel)
+                .where(SYS_CHANNEL.IS_VISIBLE.eq(1));
+        List<SysChannel> list = this.list(queryWrapper);
+//        树级结构的数据
+        List<SysChannel> sysChannels = buildTree(list, 0L);
+//        组合成vo返回
+        return sysChannels.stream().map(item -> BeanRecordUtil.beanConvertRecord(item, SysChannelTreeVO.class)).toList();
     }
 }

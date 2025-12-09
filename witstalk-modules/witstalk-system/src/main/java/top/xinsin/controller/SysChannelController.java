@@ -89,6 +89,11 @@ public class SysChannelController {
         return Result.success(sysChannelService.getTreeList(sysChannel));
     }
 
+    @PostMapping("/treeListByUser")
+    public Result<List<SysChannelTreeVO>> treeListByUser(@RequestBody SysChannel sysChannel) {
+        return Result.success(sysChannelService.getTreeListByUser(sysChannel));
+    }
+
     /**
      * 删除多个
      * @param ids 字典类型IDs

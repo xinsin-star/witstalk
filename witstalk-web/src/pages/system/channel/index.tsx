@@ -1,25 +1,11 @@
 import {Empty, Form, Input, InputNumber, Switch, Button, Row, Col, Select} from "antd";
 import DictType from "~/components/DictType";
 import { useState } from "react";
-import ChannelTree from "~/components/ChannelTree";
+import ChannelTree, { type Channel } from "~/components/ChannelTree";
 import { request } from "~/util/request";
 import { showMessage } from "~/util/msg";
 import { useDictType } from "~/hook/useDictType";
 import {useRequest} from "~/hook/useRequest.ts";
-
-// Define Channel interface locally
-type Channel = {
-    id: number;
-    parentId: number;
-    channelName: string;
-    channelCode: string;
-    channelDesc: string;
-    channelTip: string;
-    channelImg: string;
-    sort: number;
-    isTop: boolean;
-    children?: Channel[];
-};
 
 const url = {
     detail: '/system/sysChannel/detail',
@@ -34,16 +20,16 @@ interface ChannelForm extends Channel {
     maxLength: number; //必填字段 最大可进入人数
     permissionId: number; //必填字段 权限ID 这块代码应从权限管理模块获取
     permissionCode: string; //必填字段 权限编码 这是字典code
-    is_password: boolean; //必填字段 是否需要密码
+    isPassword: boolean; //必填字段 是否需要密码
     password: string; // 密码 只有当is_password为true时才需要填写
-    is_visible: boolean; // 是否可见 默认为false 需要手动改为true才能在前端显示
+    isVisible: boolean; // 是否可见 默认为false 需要手动改为true才能在前端显示
     createTime: string; // 创建时间 不可修改
     updateTime: string; // 更新时间 不可修改
     createBy: string; // 创建人 不可修改
     updateBy: string; // 更新人 不可修改
 }
 
-export default function Channel() {
+export default function ChannelIndex() {
     const [form] = Form.useForm();
     const [treeData, setTreeData] = useState<Channel | null>(null);
     const { dictList } = useDictType('sys_channel_type');
@@ -79,7 +65,9 @@ export default function Channel() {
                 return;
             }
             values.channelTypeText = channelTypeItem.dictLabel || '';
-            values.permissionCode = channelPermission.perms || '';
+            if (channelPermission) {
+                values.permissionCode = channelPermission.perms || '';
+            }
             form.setFieldsValue(values);
             await request({
                 url: url.create,
@@ -231,7 +219,7 @@ export default function Channel() {
                                     <Row gutter={[16, 16]}>
                                         <Col span={12}>
                                             <Form.Item
-                                                name="is_password"
+                                                name="isPassword"
                                                 label="是否需要密码"
                                                 valuePropName="checked"
                                                 initialValue={false}
@@ -269,7 +257,7 @@ export default function Channel() {
                                     <Row gutter={[16, 16]}>
                                         <Col span={12}>
                                             <Form.Item
-                                                name="is_visible"
+                                                name="isVisible"
                                                 label="是否可见"
                                                 valuePropName="checked"
                                                 initialValue={false}
