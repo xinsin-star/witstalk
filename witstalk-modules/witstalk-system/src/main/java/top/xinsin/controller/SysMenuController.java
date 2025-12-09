@@ -88,4 +88,10 @@ public class SysMenuController {
     public Result<SysMenu> detail(@RequestParam("id") Long id) {
         return Result.success(sysMenuService.getById(id));
     }
+
+    @PostMapping("/getPermissionMenus")
+    public Result<List<SysMenu>> getPermissionMenus() {
+        List<SysMenu> permissionMenus = sysMenuService.getPermissionMenus();
+        return Result.success(permissionMenus);
+    }
 }

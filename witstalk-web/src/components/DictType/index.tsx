@@ -1,6 +1,5 @@
 import { Select } from 'antd';
-import {useRequest} from "~/hook/useRequest.ts";
-import type { DictItem } from '~/hook/useDictType';
+import { useRequest } from '~/hook/useRequest.ts';
 
 const { Option } = Select;
 
@@ -10,8 +9,8 @@ const url = {
 
 interface DictTypeProps {
     dictType: string;
-    value?: string | number | (string | number)[];
-    onChange?: (value: string | number | (string | number)[]) => void;
+    value?: any;
+    onChange?: (value: any) => void;
     placeholder?: string;
     mode?: 'single' | 'multiple';
     maxTagCount?: number;
@@ -38,7 +37,7 @@ export default function DictType({
     });
 
     // 处理选择变化
-    const handleChange = (newValue: string | number | (string | number)[]) => {
+    const handleChange = (newValue: any) => {
         if (mode === 'multiple' && maxSelectCount > 0) {
             const newValueArray = Array.isArray(newValue) ? newValue : [];
             if (newValueArray.length > maxSelectCount) {
@@ -61,9 +60,9 @@ export default function DictType({
             className={className}
             loading={!data && !error}
         >
-            {data?.map((item: DictItem) => (
+            {data?.map((item: any) => (
                 <Option key={item.dictValue} value={item.dictValue}>
-                    {item.dictLabel}
+                    {item.dictName}
                 </Option>
             ))}
         </Select>

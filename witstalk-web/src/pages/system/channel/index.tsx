@@ -1,11 +1,11 @@
-import { Empty, Form, Input, InputNumber, Switch, Button, Row, Col } from "antd";
+import {Empty, Form, Input, InputNumber, Switch, Button, Row, Col, Select} from "antd";
 import DictType from "~/components/DictType";
 import { useState } from "react";
 import ChannelTree from "~/components/ChannelTree";
 import { request } from "~/util/request";
 import { showMessage } from "~/util/msg";
-
 import { useDictType } from "~/hook/useDictType";
+import {useRequest} from "~/hook/useRequest.ts";
 
 // Define Channel interface locally
 type Channel = {
@@ -47,11 +47,12 @@ export default function Channel() {
     const [form] = Form.useForm();
     const [treeData, setTreeData] = useState<Channel | null>(null);
     const { dictList } = useDictType('sys_channel_type');
+    const {data} = useRequest({url: '/system/sysMenu/getPermissionMenus', method: 'post', data: {}})
 
     const detailForm = (id?: number) => {
         const targetId = id || treeData?.id;
         if (!targetId) return;
-        
+
         request({
             url: url.detail,
             method: 'POST',
@@ -71,12 +72,14 @@ export default function Channel() {
 
     const handleSubmit = async (values: ChannelForm) => {
         try {
+            const channelPermission = data.find((item: any) => item.id === values.permissionId)
             const channelTypeItem = dictList.find(item => item.dictValue === values.channelType);
             if (!channelTypeItem) {
                 showMessage.error('频道类型不存在');
                 return;
             }
             values.channelTypeText = channelTypeItem.dictLabel || '';
+            values.permissionCode = channelPermission.perms || '';
             form.setFieldsValue(values);
             await request({
                 url: url.create,
@@ -129,12 +132,12 @@ export default function Channel() {
                             >
                                 {/* 提交按钮 */}
                                 <div className="flex gap-3 pb-4 mb-8 border-b border-cream-input">
-                                    <Button 
-                                        htmlType="submit" 
-                                        type="primary" 
+                                    <Button
+                                        htmlType="submit"
+                                        type="primary"
                                         className="cream-button"
                                         size="large"
-                                        style={{ 
+                                        style={{
                                             padding: '8px 24px',
                                             borderRadius: 'var(--cream-border-radius-small)'
                                         }}
@@ -155,7 +158,7 @@ export default function Channel() {
                                                 <Input placeholder="请输入频道名称" className="cream-input" />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="channelCode"
@@ -165,7 +168,7 @@ export default function Channel() {
                                                 <Input placeholder="请输入频道编码" className="cream-input" />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="channelType"
@@ -173,8 +176,8 @@ export default function Channel() {
                                                 rules={[{ required: true, message: '请选择频道类型' }]}
                                             >
                                                 {/* 使用字典通用选择器，字典类型为 sys_channel_type */}
-                                                <DictType 
-                                                    dictType="sys_channel_type" 
+                                                <DictType
+                                                    dictType="sys_channel_type"
                                                     placeholder="请选择频道类型"
                                                     className="cream-input"
                                                 />
@@ -185,7 +188,7 @@ export default function Channel() {
                                                 hidden
                                             />
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="maxLength"
@@ -197,33 +200,31 @@ export default function Channel() {
                                         </Col>
                                     </Row>
                                 </div>
-                                
+
                                 {/* 权限设置 */}
                                 <div className="mb-8 cream-box">
                                     <h4 className="text-lg font-semibold mb-4 text-cream-primary border-b border-cream-input pb-2">权限设置</h4>
                                     <Row gutter={[16, 16]}>
                                         <Col span={12}>
+                                            <Select
+                                                options={data}
+                                                fieldNames={{label: "menuName", value: "id"}}
+                                                placeholder="请输入权限编码"
+                                                className="cream-input"
+                                            />
+                                        </Col>
+
+                                        <Col span={12}>
                                             <Form.Item
                                                 name="permissionId"
                                                 label="权限ID"
-                                                rules={[{ required: true, message: '请输入权限ID' }]}
+                                                hidden={true}
                                             >
-                                                <InputNumber min={1} placeholder="请输入权限ID" className="cream-input" />
-                                            </Form.Item>
-                                        </Col>
-                                        
-                                        <Col span={12}>
-                                            <Form.Item
-                                                name="permissionCode"
-                                                label="权限编码"
-                                                rules={[{ required: true, message: '请输入权限编码' }]}
-                                            >
-                                                <Input placeholder="请输入权限编码" className="cream-input" />
                                             </Form.Item>
                                         </Col>
                                     </Row>
                                 </div>
-                                
+
                                 {/* 密码设置 */}
                                 <div className="mb-8 cream-box">
                                     <h4 className="text-lg font-semibold mb-4 text-cream-primary border-b border-cream-input pb-2">密码设置</h4>
@@ -238,7 +239,7 @@ export default function Channel() {
                                                 <Switch style={{ backgroundColor: '#a67c41' }} />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="password"
@@ -261,7 +262,7 @@ export default function Channel() {
                                         </Col>
                                     </Row>
                                 </div>
-                                
+
                                 {/* 其他设置 */}
                                 <div className="mb-8 cream-box">
                                     <h4 className="text-lg font-semibold mb-4 text-cream-primary border-b border-cream-input pb-2">其他设置</h4>
@@ -276,7 +277,7 @@ export default function Channel() {
                                                 <Switch style={{ backgroundColor: '#a67c41' }} />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="isTop"
@@ -287,7 +288,7 @@ export default function Channel() {
                                                 <Switch style={{ backgroundColor: '#a67c41' }} />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="sort"
@@ -297,7 +298,7 @@ export default function Channel() {
                                                 <InputNumber min={0} placeholder="请输入排序值" className="cream-input" />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="channelImg"
@@ -308,7 +309,7 @@ export default function Channel() {
                                         </Col>
                                     </Row>
                                 </div>
-                                
+
                                 {/* 描述信息 */}
                                 <div className="mb-8 cream-box">
                                     <h4 className="text-lg font-semibold mb-4 text-cream-primary border-b border-cream-input pb-2">描述信息</h4>
@@ -321,7 +322,7 @@ export default function Channel() {
                                                 <Input.TextArea rows={4} placeholder="请输入频道描述" className="cream-input" />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={24}>
                                             <Form.Item
                                                 name="channelTip"
@@ -332,7 +333,7 @@ export default function Channel() {
                                         </Col>
                                     </Row>
                                 </div>
-                                
+
                                 {/* 不可修改字段 */}
                                 <div className="mb-8 cream-box bg-cream-bg-1">
                                     <h4 className="text-lg font-semibold mb-4 text-cream-secondary border-b border-cream-input pb-2">系统信息</h4>
@@ -346,7 +347,7 @@ export default function Channel() {
                                                 <Input disabled className="cream-input" />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="updateTime"
@@ -356,7 +357,7 @@ export default function Channel() {
                                                 <Input disabled className="cream-input" />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="createBy"
@@ -366,7 +367,7 @@ export default function Channel() {
                                                 <Input disabled className="cream-input" />
                                             </Form.Item>
                                         </Col>
-                                        
+
                                         <Col span={12}>
                                             <Form.Item
                                                 name="updateBy"

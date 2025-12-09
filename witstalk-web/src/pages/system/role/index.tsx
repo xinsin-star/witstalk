@@ -18,7 +18,7 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import { request } from '~/util/request';
-import {useRequest} from "~/hook/useRequest.ts";
+import { useRequest } from '~/hook/useRequest.ts';
 import { showMessage } from '~/util/msg';
 import WtDrawer from '~/components/WtDrawer';
 import WtPagination from '~/components/WtPagination';
@@ -58,7 +58,7 @@ export default function Role() {
     const [operationType, setOperationType] = useState<'add' | 'edit' | 'view'>('add');
     const [loading, setLoading] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
-
+    
     // 角色菜单绑定相关状态
     const [menuBindingVisible, setMenuBindingVisible] = useState(false);
     const [userBindingVisible, setUserBindingVisible] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { request } from "~/util/request.ts";
-import {useRequest} from "~/hook/useRequest.ts";
+import { useRequest } from "~/hook/useRequest.ts";
 import { ConfigProvider, Form, Input, Tree, Avatar, Modal, Tooltip } from "antd";
 import { PlusSquareOutlined, DeleteOutlined } from "@ant-design/icons";
 import WtDrawer from "~/components/WtDrawer";
