@@ -185,6 +185,8 @@ jobs:
             
             ## 产物说明
             - 后端可执行 JAR：包含 auth、system、gateway、witstalk、game、file 模块（可直接启动）
+            - JAR 文件命名格式示例：module-name-version.jar（如 auth-1.0.0.jar）
+            - JAR 文件启动命令示例：java -jar module-name-version.jar --spring.config.additional-location=file:./run/
             - 前端构建包：frontend-build-${{ steps.generate-version.outputs.VERSION }}.zip（解压后部署至 Nginx 等 Web 服务器）
           files: |
             release-artifacts/*.jar
